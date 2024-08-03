@@ -8,14 +8,29 @@ import {
   CountryCode,
 } from "./types";
 
+/**
+ * A client for interacting with the TD SYNNEX XML API.
+ */
 class SynnexClient {
   private axiosInstance: AxiosInstance;
 
+  /**
+   * Constructs a new instance of the SynnexClient.
+   *
+   * @param environment - The environment to use ('sandbox' or 'production').
+   * @param country - The country code ('US' or 'CA').
+   * @param username - The username for authentication.
+   * @param password - The password for authentication.
+   * @param accountNumber - The customer number for the account.
+   * @param customerName - The customer name for the account.
+   */
   constructor(
     private environment: "sandbox" | "production",
     private country: CountryCode,
     private username: string,
-    private password: string
+    private password: string,
+    private accountNumber: string,
+    private customerName: string
   ) {
     const baseUrl = this.getBaseUrl(environment, country);
     this.axiosInstance = axios.create({
@@ -27,7 +42,24 @@ class SynnexClient {
   }
 
   /**
+   * Build XML for the credential part of the request.
+   *
+   * @returns The credential XML as a string.
+   */
+  private buildCredentialXml(): string {
+    return `
+      <Credential>
+        <UserID>${this.username}</UserID>
+        <Password>${this.password}</Password>
+      </Credential>`;
+  }
+
+  /**
    * Determine the base URL based on the environment and country.
+   *
+   * @param environment - The environment to use ('sandbox' or 'production').
+   * @param country - The country code ('US' or 'CA').
+   * @returns The base URL as a string.
    */
   private getBaseUrl(
     environment: "sandbox" | "production",
@@ -48,6 +80,9 @@ class SynnexClient {
 
   /**
    * Build XML for the purchase order submission request.
+   *
+   * @param request - The purchase order request data.
+   * @returns The request XML as a string.
    */
   private buildRequestXml(request: SynnexB2BRequest): string {
     const itemsXml = request.OrderRequest.Items.map(
@@ -61,37 +96,50 @@ class SynnexClient {
 
     return `<?xml version="1.0" encoding="UTF-8"?>
       <SynnexB2B>
-        <Credential>
-          <UserID>${request.Credential.UserID}</UserID>
-          <Password>${request.Credential.Password}</Password>
-          <CustomerNumber>${request.Credential.CustomerNumber}</CustomerNumber>
-        </Credential>
+        ${this.buildCredentialXml()}
         <OrderRequest>
+          <accountNumber>${this.accountNumber}</accountNumber>
           <PONumber>${request.OrderRequest.PONumber}</PONumber>
           <DropShipFlag>${request.OrderRequest.DropShipFlag}</DropShipFlag>
           <Shipment>
-            <ShipFromWarehouse>${request.OrderRequest.Shipment.ShipFromWarehouse}</ShipFromWarehouse>
+            <ShipFromWarehouse>${
+              request.OrderRequest.Shipment.ShipFromWarehouse
+            }</ShipFromWarehouse>
             <ShipTo>
-              <AddressName1>${request.OrderRequest.Shipment.ShipTo.AddressName1}</AddressName1>
-              <AddressLine1>${request.OrderRequest.Shipment.ShipTo.AddressLine1}</AddressLine1>
+              <AddressName1>${
+                request.OrderRequest.Shipment.ShipTo.AddressName1
+              }</AddressName1>
+              <AddressLine1>${
+                request.OrderRequest.Shipment.ShipTo.AddressLine1
+              }</AddressLine1>
               <City>${request.OrderRequest.Shipment.ShipTo.City}</City>
               <State>${request.OrderRequest.Shipment.ShipTo.State}</State>
               <ZipCode>${request.OrderRequest.Shipment.ShipTo.ZipCode}</ZipCode>
               <Country>${request.OrderRequest.Shipment.ShipTo.Country}</Country>
             </ShipTo>
             <ShipToContact>
-              <ContactName>${request.OrderRequest.Shipment.ShipToContact.ContactName}</ContactName>
-              <PhoneNumber>${request.OrderRequest.Shipment.ShipToContact.PhoneNumber}</PhoneNumber>
-              <EmailAddress>${request.OrderRequest.Shipment.ShipToContact.EmailAddress}</EmailAddress>
+              <ContactName>${
+                request.OrderRequest.Shipment.ShipToContact.ContactName
+              }</ContactName>
+              <PhoneNumber>${
+                request.OrderRequest.Shipment.ShipToContact.PhoneNumber
+              }</PhoneNumber>
+              <EmailAddress>${
+                request.OrderRequest.Shipment.ShipToContact.EmailAddress
+              }</EmailAddress>
             </ShipToContact>
             <ShipMethod>
               <Code>${request.OrderRequest.Shipment.ShipMethod.Code}</Code>
             </ShipMethod>
           </Shipment>
           <Payment>
-            <BillTo>
-              <AddressName1>${request.OrderRequest.Payment.BillTo.AddressName1}</AddressName1>
-              <AddressLine1>${request.OrderRequest.Payment.BillTo.AddressLine1}</AddressLine1>
+            <BillTo code=${this.accountNumber}>
+              <AddressName1>${
+                request.OrderRequest.Payment.BillTo.AddressName1
+              }</AddressName1>
+              <AddressLine1>${
+                request.OrderRequest.Payment.BillTo.AddressLine1
+              }</AddressLine1>
               <City>${request.OrderRequest.Payment.BillTo.City}</City>
               <State>${request.OrderRequest.Payment.BillTo.State}</State>
               <ZipCode>${request.OrderRequest.Payment.BillTo.ZipCode}</ZipCode>
@@ -105,16 +153,16 @@ class SynnexClient {
 
   /**
    * Build XML for the purchase order status request.
+   *
+   * @param request - The PO status request data.
+   * @returns The status request XML as a string.
    */
   private buildStatusRequestXml(request: POStatusRequest): string {
     return `<?xml version="1.0" encoding="UTF-8"?>
       <SynnexB2B>
-        <Credential>
-          <UserID>${request.Credential.UserID}</UserID>
-          <Password>${request.Credential.Password}</Password>
-          <CustomerNumber>${request.Credential.CustomerNumber}</CustomerNumber>
-        </Credential>
+        ${this.buildCredentialXml()}
         <OrderStatusRequest>
+          <CustomerNumber>${this.accountNumber}</CustomerNumber>
           <PONumber>${request.OrderStatusRequest.PONumber}</PONumber>
         </OrderStatusRequest>
       </SynnexB2B>`;
@@ -122,6 +170,10 @@ class SynnexClient {
 
   /**
    * Submit a purchase order.
+   *
+   * @param request - The purchase order request data.
+   * @returns A promise that resolves to the purchase order response.
+   * @throws An error if the submission fails.
    */
   public async submitPO(request: SynnexB2BRequest): Promise<SynnexB2BResponse> {
     try {
@@ -139,6 +191,10 @@ class SynnexClient {
 
   /**
    * Get the status of a purchase order.
+   *
+   * @param request - The PO status request data.
+   * @returns A promise that resolves to the purchase order status response.
+   * @throws An error if the request fails.
    */
   public async getOrderStatus(
     request: POStatusRequest
