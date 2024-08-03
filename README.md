@@ -130,6 +130,25 @@ async function checkOrderStatus() {
 checkOrderStatus();
 ```
 
+#### Example: Checking Price and Availability of given SKU
+
+```typescript
+async function checkPriceAvailability() {
+  const skus = ["439866", "1058926"];
+
+  try {
+    const priceAvailabilityResponse = await synnexClient.getPriceAvailability(
+      skus
+    );
+    console.log("Price and Availability Response:", priceAvailabilityResponse);
+  } catch (error) {
+    console.error("Error fetching price and availability:", error);
+  }
+}
+
+checkPriceAvailability();
+```
+
 ## Environment Configuration
 
 You can switch between the sandbox and production environments using the `environment` option in the configuration. Here are examples for both environments:

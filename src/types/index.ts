@@ -317,3 +317,38 @@ export interface POStatusResponse {
     ResponseElapsedTime: string;
   };
 }
+
+/**
+ * Represents a request for price and availability.
+ */
+export interface PriceAvailabilityRequest {
+  sku: string[];
+}
+
+/**
+ * Represents a response for price and availability.
+ */
+export interface PriceAvailabilityResponse {
+  customerNo: string; // Customer account number
+  userName: string; // User ID making the request
+  PriceAvailabilityList: Array<{
+    synnexSKU: string; // The SKU number in TD SYNNEX system
+    mfgPN: string; // Manufacturer Part Number
+    mfgCode: string; // Manufacturer code
+    status: string; // Status of the SKU (e.g., Active, Discontinued)
+    description: string; // Description of the item
+    GlobalProductStatusCode: string; // Global status code of the product
+    price: number; // Price for the reseller
+    totalQuantity: number; // Total available quantity
+    AvailabilityByWarehouse: Array<{
+      warehouseInfo: {
+        number: string; // Warehouse number
+        zipcode: string; // Zip code of the warehouse
+        city: string; // City where the warehouse is located
+        addr: string; // Address of the warehouse
+      };
+      qty: number; // Quantity available in the warehouse
+    }>;
+    lineNumber: number; // Line number to correlate with request
+  }>;
+}

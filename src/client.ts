@@ -6,6 +6,8 @@ import {
   POStatusRequest,
   POStatusResponse,
   CountryCode,
+  PriceAvailabilityRequest,
+  PriceAvailabilityResponse,
 } from "./types";
 
 /**
@@ -171,6 +173,32 @@ export class SynnexClient {
   }
 
   /**
+   * Build XML for the price and availability request.
+   *
+   * @param skus - The array of SKUs.
+   * @returns The request XML as a string.
+   */
+  private buildPriceAvailabilityRequestXml(skus: string[]): string {
+    const skuListXml = skus
+      .map(
+        (sku, index) => `
+        <skuList>
+          <synnexSKU>${sku}</synnexSKU>
+          <lineNumber>${index + 1}</lineNumber>
+        </skuList>`
+      )
+      .join("");
+
+    return `<?xml version="1.0" encoding="UTF-8" ?>
+      <priceRequest>
+        <customerNo>${this.config.accountNumber}</customerNo>
+        <userName>${this.config.username}</userName>
+        <password>${this.config.password}</password>
+        ${skuListXml}
+      </priceRequest>`;
+  }
+
+  /**
    * Submit a purchase order.
    *
    * @param request - The purchase order request data.
@@ -211,6 +239,29 @@ export class SynnexClient {
       return result;
     } catch (error: any) {
       throw new Error(`Failed to get PO status: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get price and availability for a list of SKUs.
+   *
+   * @param request - The price and availability request data.
+   * @returns A promise that resolves to the price and availability response.
+   * @throws An error if the request fails.
+   */
+  public async getPriceAvailability(
+    skus: string[]
+  ): Promise<PriceAvailabilityResponse> {
+    try {
+      const requestXml = this.buildPriceAvailabilityRequestXml(skus);
+      const response = await this.axiosInstance.post(
+        "/SynnexXML/PriceAvailability",
+        requestXml
+      );
+      const result = await parseStringPromise(response.data);
+      return result;
+    } catch (error: any) {
+      throw new Error(`Failed to get price and availability: ${error.message}`);
     }
   }
 }
