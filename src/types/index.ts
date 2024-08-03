@@ -271,10 +271,7 @@ export interface Package {
 }
 
 export interface POStatusRequest {
-  OrderStatusRequest: {
-    CustomerNumber: string;
-    PONumber: string;
-  };
+  PONumber: string;
 }
 
 export interface POStatusResponse {

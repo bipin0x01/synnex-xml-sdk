@@ -165,7 +165,7 @@ export class SynnexClient {
         ${this.buildCredentialXml()}
         <OrderStatusRequest>
           <CustomerNumber>${this.config.accountNumber}</CustomerNumber>
-          <PONumber>${request.OrderStatusRequest.PONumber}</PONumber>
+          <PONumber>${request.PONumber}</PONumber>
         </OrderStatusRequest>
       </SynnexB2B>`;
   }
