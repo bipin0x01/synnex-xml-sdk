@@ -9,30 +9,32 @@ import {
 } from "./types";
 
 /**
+ * Configuration options for the SynnexClient.
+ */
+interface SynnexClientConfig {
+  environment: "sandbox" | "production";
+  country: CountryCode;
+  username: string;
+  password: string;
+  accountNumber: string;
+  accountName: string;
+}
+
+/**
  * A client for interacting with the TD SYNNEX XML API.
  */
-class SynnexClient {
+export class SynnexClient {
   private axiosInstance: AxiosInstance;
+  private config: SynnexClientConfig;
 
   /**
    * Constructs a new instance of the SynnexClient.
    *
-   * @param environment - The environment to use ('sandbox' or 'production').
-   * @param country - The country code ('US' or 'CA').
-   * @param username - The username for authentication.
-   * @param password - The password for authentication.
-   * @param accountNumber - The customer number for the account.
-   * @param customerName - The customer name for the account.
+   * @param config - The configuration object for the client.
    */
-  constructor(
-    private environment: "sandbox" | "production",
-    private country: CountryCode,
-    private username: string,
-    private password: string,
-    private accountNumber: string,
-    private customerName: string
-  ) {
-    const baseUrl = this.getBaseUrl(environment, country);
+  constructor(config: SynnexClientConfig) {
+    this.config = config;
+    const baseUrl = this.getBaseUrl(config.environment, config.country);
     this.axiosInstance = axios.create({
       baseURL: baseUrl,
       headers: {
@@ -49,8 +51,8 @@ class SynnexClient {
   private buildCredentialXml(): string {
     return `
       <Credential>
-        <UserID>${this.username}</UserID>
-        <Password>${this.password}</Password>
+        <UserID>${this.config.username}</UserID>
+        <Password>${this.config.password}</Password>
       </Credential>`;
   }
 
@@ -98,7 +100,7 @@ class SynnexClient {
       <SynnexB2B>
         ${this.buildCredentialXml()}
         <OrderRequest>
-          <accountNumber>${this.accountNumber}</accountNumber>
+          <accountNumber>${this.config.accountNumber}</accountNumber>
           <PONumber>${request.OrderRequest.PONumber}</PONumber>
           <DropShipFlag>${request.OrderRequest.DropShipFlag}</DropShipFlag>
           <Shipment>
@@ -133,7 +135,7 @@ class SynnexClient {
             </ShipMethod>
           </Shipment>
           <Payment>
-            <BillTo code=${this.accountNumber}>
+            <BillTo code=${this.config.accountNumber}>
               <AddressName1>${
                 request.OrderRequest.Payment.BillTo.AddressName1
               }</AddressName1>
@@ -162,7 +164,7 @@ class SynnexClient {
       <SynnexB2B>
         ${this.buildCredentialXml()}
         <OrderStatusRequest>
-          <CustomerNumber>${this.accountNumber}</CustomerNumber>
+          <CustomerNumber>${this.config.accountNumber}</CustomerNumber>
           <PONumber>${request.OrderStatusRequest.PONumber}</PONumber>
         </OrderStatusRequest>
       </SynnexB2B>`;
