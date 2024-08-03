@@ -1,14 +1,13 @@
 import axios, { AxiosInstance } from "axios";
-import { parseStringPromise } from "xml2js";
 import {
   SynnexB2BRequest,
   SynnexB2BResponse,
   POStatusRequest,
   POStatusResponse,
   CountryCode,
-  PriceAvailabilityRequest,
   PriceAvailabilityResponse,
 } from "./types";
+import { parseXmlToJson } from "./utils/parser";
 
 /**
  * Configuration options for the SynnexClient.
@@ -212,7 +211,7 @@ export class SynnexClient {
         "/SynnexXML/PO",
         requestXml
       );
-      const result = await parseStringPromise(response.data);
+      const result = await parseXmlToJson(response.data);
       return result;
     } catch (error: any) {
       throw new Error(`Failed to submit PO: ${error.message}`);
@@ -235,7 +234,7 @@ export class SynnexClient {
         "/SynnexXML/PO",
         requestXml
       );
-      const result = await parseStringPromise(response.data);
+      const result = await parseXmlToJson(response.data);
       return result;
     } catch (error: any) {
       throw new Error(`Failed to get PO status: ${error.message}`);
@@ -258,7 +257,7 @@ export class SynnexClient {
         "/SynnexXML/PriceAvailability",
         requestXml
       );
-      const result = await parseStringPromise(response.data);
+      const result = await parseXmlToJson(response.data);
       return result;
     } catch (error: any) {
       throw new Error(`Failed to get price and availability: ${error.message}`);
