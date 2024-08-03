@@ -389,7 +389,7 @@ export class SynnexClient {
       // Automatically populate customer details and request time
       const fullRequest: FreightWithZipRequest = {
         ...request,
-        version: "2.0",
+        version: "1.0",
         customerNumber: this.config.accountNumber,
         customerName: this.config.accountName,
         requestDateTime: new Date().toISOString(),
