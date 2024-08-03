@@ -327,7 +327,7 @@ export interface FreightQuoteRequest {
   requestDateTime: string;
   shipFromWarehouse: string;
   shipToZipCode?: string;
-  shipTo?: {
+  shipTo: {
     addressName1: string;
     addressName2?: string;
     addressLine1: string;

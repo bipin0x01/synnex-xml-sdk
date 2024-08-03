@@ -220,8 +220,7 @@ export class SynnexClient {
       )
       .join("");
 
-    const shipToXml = request.shipTo
-      ? `<ShipTo>
+    const shipToXml = `<ShipTo>
           <AddressName1>${request.shipTo.addressName1}</AddressName1>
           <AddressName2>${request.shipTo.addressName2 || ""}</AddressName2>
           <AddressLine1>${request.shipTo.addressLine1}</AddressLine1>
@@ -230,9 +229,7 @@ export class SynnexClient {
           <State>${request.shipTo.state}</State>
           <ZipCode>${request.shipTo.zipCode}</ZipCode>
           <Country>${request.shipTo.country}</Country>
-        </ShipTo>`
-      : `<ShipToZipCode>${request.shipToZipCode}</ShipToZipCode>`;
-
+        </ShipTo>`;
     return `<?xml version="1.0" encoding="UTF-8"?>
       <SynnexB2B>
         ${this.buildCredentialXml()}
@@ -360,7 +357,14 @@ export class SynnexClient {
     request: FreightQuoteRequest
   ): Promise<FreightQuoteResponse> {
     try {
-      const requestXml = this.buildFreightQuoteRequestXml(request);
+      const fullRequest: FreightQuoteRequest = {
+        ...request,
+        version: "2.0",
+        customerNumber: this.config.accountNumber,
+        customerName: this.config.accountName,
+        requestDateTime: new Date().toISOString(),
+      };
+      const requestXml = this.buildFreightQuoteRequestXml(fullRequest);
       const response = await this.axiosInstance.post(
         "/SynnexXML/FreightQuote",
         requestXml
