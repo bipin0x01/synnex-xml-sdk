@@ -260,8 +260,8 @@ export class SynnexClient {
   ): string {
     const itemsXml = request.items
       .map(
-        (item) => `
-        <Item lineNumber="${item.lineNumber}">
+        (item, index) => `
+        <Item lineNumber="${index}">
           <SKU>${item.SKU}</SKU>
           <Quantity>${item.quantity}</Quantity>
         </Item>`
@@ -382,7 +382,7 @@ export class SynnexClient {
   public async getFreightWithZip(
     request: Omit<
       FreightWithZipRequest,
-      "customerNumber" | "customerName" | "requestDateTime"
+      "customerNumber" | "customerName" | "requestDateTime" | "version"
     >
   ): Promise<FreightWithZipResponse> {
     try {
