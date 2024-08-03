@@ -366,7 +366,7 @@ export class SynnexClient {
         requestXml
       );
       const result = await parseXmlToJson(response.data);
-      return result.SynnexB2B.FreightQuoteResponse;
+      return result;
     } catch (error: any) {
       throw new Error(`Failed to get freight quote: ${error.message}`);
     }
@@ -401,7 +401,7 @@ export class SynnexClient {
         requestXml
       );
       const result = await parseXmlToJson(response.data);
-      return result.SynnexB2B.FreightQuoteResponse;
+      return result;
     } catch (error: any) {
       throw new Error(
         `Failed to get freight quote with zip code: ${error.message}`
