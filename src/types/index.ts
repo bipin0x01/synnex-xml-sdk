@@ -318,11 +318,81 @@ export interface POStatusResponse {
   };
 }
 
-/**
- * Represents a request for price and availability.
- */
-export interface PriceAvailabilityRequest {
-  sku: string[];
+// types.ts
+
+export interface FreightQuoteRequest {
+  version: string;
+  customerNumber: string;
+  customerName: string;
+  requestDateTime: string;
+  shipFromWarehouse: string;
+  shipToZipCode?: string;
+  shipTo?: {
+    addressName1: string;
+    addressName2?: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
+  shipMethodCode?: string;
+  serviceLevel?: number;
+  items: Array<{
+    lineNumber: number;
+    SKU: string;
+    mfgPartNumber: string;
+    description: string;
+    quantity: number;
+  }>;
+}
+
+export interface FreightQuoteResponse {
+  customerNumber: string;
+  responseDateTime: string;
+  responseElapsedTime: string;
+  totalWeight: string;
+  totalSales: string;
+  freeFreightThreshold: string;
+  shipFromWarehouse: {
+    number: string;
+    zipCode: string;
+    city: string;
+    addr: string;
+  };
+  shipTo: {
+    addressName1: string;
+    addressName2?: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+    addressType: string;
+  };
+  shipMethodCode: string;
+  shipMethodDescription: string;
+  serviceLevel: number;
+  items: Array<{
+    lineNumber: number;
+    SKU: string;
+    mfgPartNumber: string;
+    description: string;
+    quantity: number;
+  }>;
+  availableShipMethods: Array<{
+    code: string;
+    shipMethodDescription: string;
+    serviceLevel: number;
+    freight: string;
+  }>;
+  otherCharges: {
+    minOrderFee: string;
+    CODFee: string;
+  };
+  synnexInternalReference: string;
 }
 
 /**
@@ -351,4 +421,47 @@ export interface PriceAvailabilityResponse {
     }>;
     lineNumber: number; // Line number to correlate with request
   }>;
+}
+
+// types.ts
+
+export interface FreightWithZipRequest {
+  version: string;
+  customerNumber: string;
+  customerName: string;
+  requestDateTime: string;
+  shipFromWarehouse: string;
+  shipToZipCode: string;
+  items: Array<{
+    lineNumber: number;
+    SKU: string;
+    quantity: number;
+  }>;
+}
+
+export interface FreightWithZipResponse {
+  customerNumber: string;
+  responseDateTime: string;
+  responseElapsedTime: string;
+  totalWeight: string;
+  totalSales: string;
+  freeFreightThreshold: string;
+  shipFromWarehouse: {
+    number: string;
+    zipCode: string;
+    city: string;
+    addr: string;
+  };
+  shipToZipCode: string;
+  availableShipMethods: Array<{
+    code: string;
+    shipMethodDescription: string;
+    serviceLevel: number;
+    freight: string;
+  }>;
+  otherCharges: {
+    minOrderFee: string;
+    CODFee: string;
+  };
+  synnexInternalReference: string;
 }

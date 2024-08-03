@@ -6,6 +6,10 @@ import {
   POStatusResponse,
   CountryCode,
   PriceAvailabilityResponse,
+  FreightQuoteRequest,
+  FreightQuoteResponse,
+  FreightWithZipRequest,
+  FreightWithZipResponse,
 } from "./types";
 import { parseXmlToJson } from "./utils/parser";
 
@@ -198,6 +202,87 @@ export class SynnexClient {
   }
 
   /**
+   * Build XML for the freight quote request.
+   *
+   * @param request - The freight quote request data.
+   * @returns The request XML as a string.
+   */
+  private buildFreightQuoteRequestXml(request: FreightQuoteRequest): string {
+    const itemsXml = request.items
+      .map(
+        (item) => `
+        <Item lineNumber="${item.lineNumber}">
+          <SKU>${item.SKU}</SKU>
+          <MfgPartNumber>${item.mfgPartNumber}</MfgPartNumber>
+          <Description>${item.description}</Description>
+          <Quantity>${item.quantity}</Quantity>
+        </Item>`
+      )
+      .join("");
+
+    const shipToXml = request.shipTo
+      ? `<ShipTo>
+          <AddressName1>${request.shipTo.addressName1}</AddressName1>
+          <AddressName2>${request.shipTo.addressName2 || ""}</AddressName2>
+          <AddressLine1>${request.shipTo.addressLine1}</AddressLine1>
+          <AddressLine2>${request.shipTo.addressLine2 || ""}</AddressLine2>
+          <City>${request.shipTo.city}</City>
+          <State>${request.shipTo.state}</State>
+          <ZipCode>${request.shipTo.zipCode}</ZipCode>
+          <Country>${request.shipTo.country}</Country>
+        </ShipTo>`
+      : `<ShipToZipCode>${request.shipToZipCode}</ShipToZipCode>`;
+
+    return `<?xml version="1.0" encoding="UTF-8"?>
+      <SynnexB2B>
+        ${this.buildCredentialXml()}
+        <FreightQuoteRequest version="${request.version}">
+          <CustomerNumber>${request.customerNumber}</CustomerNumber>
+          <CustomerName>${request.customerName}</CustomerName>
+          <RequestDateTime>${request.requestDateTime}</RequestDateTime>
+          <ShipFromWarehouse>${request.shipFromWarehouse}</ShipFromWarehouse>
+          ${shipToXml}
+          <ShipMethodCode>${request.shipMethodCode || ""}</ShipMethodCode>
+          <ServiceLevel>${request.serviceLevel || ""}</ServiceLevel>
+          <Items>${itemsXml}</Items>
+        </FreightQuoteRequest>
+      </SynnexB2B>`;
+  }
+
+  /**
+   * Build XML for the freight quote request using zip code.
+   *
+   * @param request - The freight quote request data using zip code.
+   * @returns The request XML as a string.
+   */
+  private buildFreightWithZipRequestXml(
+    request: FreightWithZipRequest
+  ): string {
+    const itemsXml = request.items
+      .map(
+        (item) => `
+        <Item lineNumber="${item.lineNumber}">
+          <SKU>${item.SKU}</SKU>
+          <Quantity>${item.quantity}</Quantity>
+        </Item>`
+      )
+      .join("");
+
+    return `<?xml version="1.0" encoding="UTF-8"?>
+      <SynnexB2B>
+        ${this.buildCredentialXml()}
+        <FreightQuoteRequest version="${request.version}">
+          <CustomerNumber>${this.config.accountNumber}</CustomerNumber>
+          <CustomerName>${this.config.accountName}</CustomerName>
+          <RequestDateTime>${new Date().toISOString()}</RequestDateTime>
+          <ShipFromWarehouse>${request.shipFromWarehouse}</ShipFromWarehouse>
+          <ShipToZipCode>${request.shipToZipCode}</ShipToZipCode>
+          <Items>${itemsXml}</Items>
+        </FreightQuoteRequest>
+      </SynnexB2B>`;
+  }
+
+  /**
    * Submit a purchase order.
    *
    * @param request - The purchase order request data.
@@ -261,6 +346,66 @@ export class SynnexClient {
       return result;
     } catch (error: any) {
       throw new Error(`Failed to get price and availability: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get a freight quote.
+   *
+   * @param request - The freight quote request data.
+   * @returns A promise that resolves to the freight quote response.
+   * @throws An error if the request fails.
+   */
+  public async getFreightQuote(
+    request: FreightQuoteRequest
+  ): Promise<FreightQuoteResponse> {
+    try {
+      const requestXml = this.buildFreightQuoteRequestXml(request);
+      const response = await this.axiosInstance.post(
+        "/SynnexXML/FreightQuote",
+        requestXml
+      );
+      const result = await parseXmlToJson(response.data);
+      return result.SynnexB2B.FreightQuoteResponse;
+    } catch (error: any) {
+      throw new Error(`Failed to get freight quote: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get a freight quote using zip code.
+   *
+   * @param request - The freight quote request data using zip code.
+   * @returns A promise that resolves to the freight quote response.
+   * @throws An error if the request fails.
+   */
+  public async getFreightWithZip(
+    request: Omit<
+      FreightWithZipRequest,
+      "customerNumber" | "customerName" | "requestDateTime"
+    >
+  ): Promise<FreightWithZipResponse> {
+    try {
+      // Automatically populate customer details and request time
+      const fullRequest: FreightWithZipRequest = {
+        ...request,
+        version: "2.0",
+        customerNumber: this.config.accountNumber,
+        customerName: this.config.accountName,
+        requestDateTime: new Date().toISOString(),
+      };
+
+      const requestXml = this.buildFreightWithZipRequestXml(fullRequest);
+      const response = await this.axiosInstance.post(
+        "/SynnexXML/FreightQuote",
+        requestXml
+      );
+      const result = await parseXmlToJson(response.data);
+      return result.SynnexB2B.FreightQuoteResponse;
+    } catch (error: any) {
+      throw new Error(
+        `Failed to get freight quote with zip code: ${error.message}`
+      );
     }
   }
 }
