@@ -15,14 +15,14 @@ describe("SynnexClient Basic Functionality", () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    client = new SynnexClient(
-      "sandbox",
-      "US",
-      "username",
-      "password",
-      "123456",
-      "Example Company"
-    );
+    client = new SynnexClient({
+      environment: "sandbox",
+      country: "US",
+      username: "test",
+      password: "test",
+      accountNumber: "test",
+      accountName: "test",
+    });
   });
 
   afterEach(() => {
