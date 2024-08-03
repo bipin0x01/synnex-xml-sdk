@@ -175,13 +175,6 @@ export enum CAWarehouseLocation {
   RichmondBC = "81",
 }
 
-export interface Credential {
-  UserID: string;
-  Password: string;
-  CustomerNumber: string;
-  CusomerName: string;
-}
-
 export interface Address {
   AddressName1: string;
   AddressName2?: string;
@@ -236,7 +229,6 @@ export interface Payment {
 }
 
 export interface SynnexB2BRequest {
-  Credential: Credential;
   OrderRequest: OrderRequest;
 }
 
@@ -279,7 +271,6 @@ export interface Package {
 }
 
 export interface POStatusRequest {
-  Credential: Credential;
   OrderStatusRequest: {
     CustomerNumber: string;
     PONumber: string;
