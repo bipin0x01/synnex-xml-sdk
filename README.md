@@ -8,9 +8,9 @@ The `SynnexClient` class provides a simple interface to interact with the TD SYN
 
 To use the `SynnexClient`, first install the SDK package:
 
-\`\`\`bash
+```bash
 npm install synnex-xml-sdk
-\`\`\`
+```
 
 ## Usage
 
@@ -18,9 +18,9 @@ npm install synnex-xml-sdk
 
 To use the `SynnexClient`, import it from the package:
 
-\`\`\`javascript
+```typescript
 import { SynnexClient } from "synnex-xml-sdk";
-\`\`\`
+```
 
 ### Creating an Instance
 
@@ -37,16 +37,16 @@ Create an instance of `SynnexClient` by providing the necessary configuration op
 
 ### Example: Creating an Instance
 
-\`\`\`javascript
+```typescript
 const synnexClient = new SynnexClient({
-environment: "sandbox",
-country: "US",
-username: "your-username",
-password: "your-password",
-accountNumber: "your-account-number",
-accountName: "Your Account Name",
+  environment: "sandbox",
+  country: "US",
+  username: "your-username",
+  password: "your-password",
+  accountNumber: "your-account-number",
+  accountName: "Your Account Name",
 });
-\`\`\`
+```
 
 ### Submitting a Purchase Order
 
@@ -54,62 +54,62 @@ To submit a purchase order, use the `submitPO` method. This method requires a `S
 
 #### Example: Submitting a Purchase Order
 
-\`\`\`javascript
+```typescript
 const orderRequest = {
-OrderRequest: {
-PONumber: "PO123456",
-DropShipFlag: "N",
-Shipment: {
-ShipFromWarehouse: "WarehouseCode",
-ShipTo: {
-AddressName1: "Customer Name",
-AddressLine1: "123 Street",
-City: "CityName",
-State: "StateCode",
-ZipCode: "12345",
-Country: "US",
-},
-ShipToContact: {
-ContactName: "Contact Name",
-PhoneNumber: "1234567890",
-EmailAddress: "email@example.com",
-},
-ShipMethod: {
-Code: "UPS",
-},
-},
-Payment: {
-BillTo: {
-AddressName1: "Billing Name",
-AddressLine1: "456 Billing St",
-City: "BillingCity",
-State: "BillingState",
-ZipCode: "67890",
-Country: "US",
-},
-},
-Items: [
-{
-LineNumber: 1,
-SKU: "SKU123",
-UnitPrice: 10.0,
-OrderQuantity: 2,
-},
-],
-},
+  OrderRequest: {
+    PONumber: "PO123456",
+    DropShipFlag: "N",
+    Shipment: {
+      ShipFromWarehouse: "WarehouseCode",
+      ShipTo: {
+        AddressName1: "Customer Name",
+        AddressLine1: "123 Street",
+        City: "CityName",
+        State: "StateCode",
+        ZipCode: "12345",
+        Country: "US",
+      },
+      ShipToContact: {
+        ContactName: "Contact Name",
+        PhoneNumber: "1234567890",
+        EmailAddress: "email@example.com",
+      },
+      ShipMethod: {
+        Code: "UPS",
+      },
+    },
+    Payment: {
+      BillTo: {
+        AddressName1: "Billing Name",
+        AddressLine1: "456 Billing St",
+        City: "BillingCity",
+        State: "BillingState",
+        ZipCode: "67890",
+        Country: "US",
+      },
+    },
+    Items: [
+      {
+        LineNumber: 1,
+        SKU: "SKU123",
+        UnitPrice: 10.0,
+        OrderQuantity: 2,
+      },
+    ],
+  },
 };
 
 async function submitOrder() {
-try {
-const response = await synnexClient.submitPO(orderRequest);
-console.log("Order submitted successfully:", response);
-} catch (error) {
-console.error("Error submitting order:", error);
-}
+  try {
+    const response = await synnexClient.submitPO(orderRequest);
+    console.log("Order submitted successfully:", response);
+  } catch (error) {
+    console.error("Error submitting order:", error);
+  }
 }
 
 submitOrder();
-\`\`\`
+```
 
 ### Checking Purchase Order Status
 
@@ -117,24 +117,18 @@ To check the status of a purchase order, use the `getOrderStatus` method. This m
 
 #### Example: Checking Purchase Order Status
 
-\`\`\`javascript
-const statusRequest = {
-OrderStatusRequest: {
-PONumber: "PO123456",
-},
-};
-
+```typescript
 async function checkOrderStatus() {
-try {
-const statusResponse = await synnexClient.getOrderStatus(statusRequest);
-console.log("Order status:", statusResponse);
-} catch (error) {
-console.error("Error retrieving order status:", error);
-}
+  try {
+    const statusResponse = await synnexClient.getOrderStatus("");
+    console.log("Order status:", statusResponse);
+  } catch (error) {
+    console.error("Error retrieving order status:", error);
+  }
 }
 
 checkOrderStatus();
-\`\`\`
+```
 
 ## Environment Configuration
 
@@ -142,29 +136,29 @@ You can switch between the sandbox and production environments using the `enviro
 
 ### Sandbox Environment
 
-\`\`\`javascript
+```typescript
 const sandboxClient = new SynnexClient({
-environment: "sandbox",
-country: "US",
-username: "sandbox-username",
-password: "sandbox-password",
-accountNumber: "sandbox-account-number",
-accountName: "Sandbox Account",
+  environment: "sandbox",
+  country: "US",
+  username: "sandbox-username",
+  password: "sandbox-password",
+  accountNumber: "sandbox-account-number",
+  accountName: "Sandbox Account",
 });
-\`\`\`
+```
 
 ### Production Environment
 
-\`\`\`javascript
+```typescript
 const productionClient = new SynnexClient({
-environment: "production",
-country: "US",
-username: "production-username",
-password: "production-password",
-accountNumber: "production-account-number",
-accountName: "Production Account",
+  environment: "production",
+  country: "US",
+  username: "production-username",
+  password: "production-password",
+  accountNumber: "production-account-number",
+  accountName: "Production Account",
 });
-\`\`\`
+```
 
 ## Conclusion
 
