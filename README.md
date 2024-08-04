@@ -181,4 +181,4 @@ const productionClient = new SynnexClient({
 
 ## Conclusion
 
-This SDK provides a straightforward interface for interacting with the TD SYNNEX XML API. Ensure you have the correct credentials and environment setup to use the client effectively. For more detailed information on request and response structures, please refer to the official TD SYNNEX API documentation.
+This SDK provides a straightforward interface for interacting with the TD SYNNEX XML API. Ensure you have the correct credentials and environment setup to use the client effectively. For more detailed information on request and response structures, please refer to the [official TD SYNNEX API documentation](https://www.synnexcorp.com/esolutions/xml/).
