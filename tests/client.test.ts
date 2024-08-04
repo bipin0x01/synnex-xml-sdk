@@ -1,43 +1,41 @@
-import {
-  CountryCode,
-  DropShipFlag,
-  SynnexB2BRequest,
-  SynnexClient,
-  USShipMethodCode,
-  USWarehouseLocation,
-} from "../src";
-import axios from "axios";
-import MockAdapter from "axios-mock-adapter";
+import { SynnexClient, SynnexClientConfig } from "../src"; // Adjust the import path as necessary
+import dotenv from "dotenv";
 
-describe("SynnexClient Basic Functionality", () => {
-  let mock: MockAdapter;
-  let client: SynnexClient;
+dotenv.config();
 
-  beforeEach(() => {
-    mock = new MockAdapter(axios);
-    client = new SynnexClient({
-      environment: "sandbox",
-      country: "US",
-      username: "test",
-      password: "test",
-      accountNumber: "test",
-      accountName: "test",
-    });
-  });
+const config: SynnexClientConfig = {
+  environment: process.env.SYNNEX_ENVIRONMENT as "sandbox" | "production",
+  country: process.env.SYNNEX_COUNTRY as "US" | "CA",
+  username: process.env.SYNNEX_USERNAME || "",
+  password: process.env.SYNNEX_PASSWORD || "",
+  accountNumber: process.env.SYNNEX_ACCOUNT_NUMBER || "",
+  accountName: process.env.SYNNEX_ACCOUNT_NAME || "",
+};
 
-  afterEach(() => {
-    mock.restore();
-  });
+describe("getFreightQuoteWithZipcode", () => {
+  it("should return the expected response from getFreightWithZip", async () => {
+    const synnexClient = new SynnexClient(config);
 
-  it("should create an instance of SynnexClient", () => {
-    expect(client).toBeInstanceOf(SynnexClient);
-  });
+    const data = {
+      shipFromWarehouse: "50",
+      shipToZipCode: "75001",
+      items: [
+        {
+          lineNumber: 1,
+          SKU: "2426708",
+          quantity: 1,
+        },
+      ],
+    };
 
-  it("should have a method to submit a purchase order", () => {
-    expect(typeof client.submitPO).toBe("function");
-  });
+    const response = await synnexClient.getFreightWithZip(data);
+    console.log("Response:", response);
 
-  it("should have a method to get order status", () => {
-    expect(typeof client.getOrderStatus).toBe("function");
+    // Add assertions to validate the response
+    expect(response.availableShipMethods).toHaveProperty("availableShipMethod");
+    expect(response.availableShipMethods.availableShipMethod).toBeInstanceOf(
+      Array
+    );
+    expect(response.customerNumber).toBe("780980");
   });
 });
