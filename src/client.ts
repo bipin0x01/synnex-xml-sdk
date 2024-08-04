@@ -10,20 +10,9 @@ import {
   FreightQuoteResponse,
   FreightWithZipRequest,
   FreightWithZipResponse,
+  SynnexClientConfig,
 } from "./types";
 import { parseXmlToJson } from "./utils/parser";
-
-/**
- * Configuration options for the SynnexClient.
- */
-interface SynnexClientConfig {
-  environment: "sandbox" | "production";
-  country: CountryCode;
-  username: string;
-  password: string;
-  accountNumber: string;
-  accountName: string;
-}
 
 /**
  * A client for interacting with the TD SYNNEX XML API.
@@ -370,7 +359,10 @@ export class SynnexClient {
         requestXml
       );
       const result = await parseXmlToJson(response.data);
-      return result;
+      if (!result.freightquoteresponse) {
+        throw new Error(result.errordetail);
+      }
+      return result.freightquoteresponse;
     } catch (error: any) {
       throw new Error(`Failed to get freight quote: ${error.message}`);
     }
@@ -405,7 +397,10 @@ export class SynnexClient {
         requestXml
       );
       const result = await parseXmlToJson(response.data);
-      return result;
+      if (!result.freightQuoteResponse) {
+        throw new Error(result.errorDetail);
+      }
+      return result.freightQuoteResponse;
     } catch (error: any) {
       throw new Error(
         `Failed to get freight quote with zip code: ${error.message}`

@@ -1,6 +1,6 @@
 {
   "name": "synnex-xml-sdk",
-  "version": "1.0.2",
+  "version": "1.0.21",
   "description": "A TypeScript-supported Node.js SDK for Synnex XML Services.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -34,10 +34,13 @@
   "dependencies": {
     "axios": "^0.21.1",
     "axios-mock-adapter": "^1.22.0",
+    "dotenv": "^16.4.5",
+    "lodash": "^4.17.21",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
+    "@types/lodash": "^4.17.7",
     "@types/node": "^14.14.22",
     "@types/xml2js": "^0.4.14",
     "eslint": "^7.18.0",

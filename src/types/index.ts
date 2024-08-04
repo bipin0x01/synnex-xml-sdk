@@ -1,3 +1,15 @@
+/**
+ * Configuration options for the SynnexClient.
+ */
+export interface SynnexClientConfig {
+  environment: "sandbox" | "production";
+  country: CountryCode;
+  username: string;
+  password: string;
+  accountNumber: string;
+  accountName: string;
+}
+
 export enum DropShipFlag {
   Yes = "Y",
   No = "N",
@@ -453,12 +465,14 @@ export interface FreightWithZipResponse {
     addr: string;
   };
   shipToZipCode: string;
-  availableShipMethods: Array<{
-    code: string;
-    shipMethodDescription: string;
-    serviceLevel: number;
-    freight: string;
-  }>;
+  availableShipMethods: {
+    availableShipMethod: Array<{
+      code: string;
+      shipMethodDescription: string;
+      serviceLevel: number;
+      freight: string;
+    }>;
+  };
   otherCharges: {
     minOrderFee: string;
     CODFee: string;

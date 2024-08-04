@@ -1,0 +1,4 @@
+# Ignore test files
+tests/
+*.test.js
+*.spec.js
