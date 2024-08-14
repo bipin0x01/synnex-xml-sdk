@@ -336,7 +336,7 @@ export interface FreightQuoteRequest {
   version?: string;
   customerNumber?: string;
   customerName?: string;
-  requestDateTime: string;
+  requestDateTime?: string;
   shipFromWarehouse: string;
   shipToZipCode?: string;
   shipTo: {
@@ -441,7 +441,7 @@ export interface FreightWithZipRequest {
   version?: string;
   customerNumber?: string;
   customerName?: string;
-  requestDateTime: string;
+  requestDateTime?: string;
   shipFromWarehouse: string;
   shipToZipCode: string;
   items: Array<{

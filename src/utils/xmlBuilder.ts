@@ -171,6 +171,7 @@ export class SynnexXmlBuilder {
    */
   public buildFreightQuoteRequestXml(request: FreightQuoteRequest): string {
     const version = request.version || "2.0";
+    const requestDateTime = new Date().toISOString();
     const itemsXml = request.items
       .map(
         (item) => `
@@ -199,7 +200,7 @@ export class SynnexXmlBuilder {
         <FreightQuoteRequest version="${version}">
           <CustomerNumber>${request.customerNumber}</CustomerNumber>
           <CustomerName>${request.customerName}</CustomerName>
-          <RequestDateTime>${request.requestDateTime}</RequestDateTime>
+          <RequestDateTime>${requestDateTime}</RequestDateTime>
           <ShipFromWarehouse>${request.shipFromWarehouse}</ShipFromWarehouse>
           ${shipToXml}
           <ShipMethodCode>${request.shipMethodCode || ""}</ShipMethodCode>
@@ -217,6 +218,7 @@ export class SynnexXmlBuilder {
    */
   public buildFreightWithZipRequestXml(request: FreightWithZipRequest): string {
     const version = request.version || "1.0";
+    const requestDateTime = new Date().toISOString();
     const itemsXml = request.items
       .map(
         (item, index) => `
@@ -233,7 +235,7 @@ export class SynnexXmlBuilder {
         <FreightQuoteRequest version="${version}">
           <CustomerNumber>${this.accountNumber}</CustomerNumber>
           <CustomerName>${this.accountName}</CustomerName>
-          <RequestDateTime>${new Date().toISOString()}</RequestDateTime>
+          <RequestDateTime>${requestDateTime}</RequestDateTime>
           <ShipFromWarehouse>${request.shipFromWarehouse}</ShipFromWarehouse>
           <ShipToZipCode>${request.shipToZipCode}</ShipToZipCode>
           <Items>${itemsXml}</Items>
