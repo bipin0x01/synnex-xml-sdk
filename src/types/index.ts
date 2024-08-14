@@ -188,39 +188,37 @@ export enum CAWarehouseLocation {
 }
 
 export interface Address {
-  AddressName1: string;
-  AddressName2?: string;
-  AddressLine1: string;
-  AddressLine2?: string;
-  City: string;
-  State: string;
-  ZipCode: string;
-  Country: CountryCode;
+  addressName1: string;
+  addressLine1?: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: CountryCode;
 }
 
 export interface Contact {
-  ContactName: string;
-  PhoneNumber: string;
-  EmailAddress: string;
+  contactName: string;
+  phoneNumber: string;
+  emailAddress: string;
 }
 
 export interface Item {
-  SKU: string;
-  UnitPrice: number;
-  OrderQuantity: number;
-  LineNumber: string;
-  CustomerPartNumber?: string;
-  ProductName?: string;
-  Comments?: string[];
+  sku: string;
+  unitPrice: number;
+  orderQuantity: number;
+  lineNumber: string;
+  customerPartNumber?: string;
+  productName?: string;
+  comments?: string[];
 }
 
 export interface OrderRequest {
-  CustomerNumber: string;
-  PONumber: string;
-  DropShipFlag: DropShipFlag;
-  Shipment: Shipment;
-  Payment: Payment;
-  Items: Item[];
+  customerNumber: string;
+  poNumber: string;
+  dropShipFlag: DropShipFlag;
+  shipment: Shipment;
+  payment: Payment;
+  items: Item[];
 }
 
 export interface Shipment {
@@ -232,54 +230,53 @@ export interface Shipment {
 }
 
 export interface ShipMethod {
-  Code: USShipMethodCode | CAShipMethodCode;
-  Description?: string;
+  code: USShipMethodCode | CAShipMethodCode;
+  description?: string;
 }
 
 export interface Payment {
-  BillTo: Address;
+  billTo: Address;
+}
+
+export interface Package {
+  trackingNumber: string;
+  weight: number;
+  shipItemQuantity: number;
+  serialNo?: string;
+  imei?: string;
+  macAddress?: string;
 }
 
 export interface SynnexB2BRequest {
   OrderRequest: OrderRequest;
 }
-
 export interface SynnexB2BResponse {
-  OrderResponse: {
-    CustomerNumber: string;
-    PONumber: string;
-    Code: string;
-    ResponseDateTime: string;
-    Items: {
-      LineNumber: string;
-      SKU: string;
-      OrderQuantity: number;
-      Code: string;
-      OrderNumber: string;
-      OrderType: string;
-      ShipQuantity: number;
-      ShipDatetime?: string;
-      MfgPN?: string;
-      ProductName?: string;
-      ShipFromWarehouse?: string;
-      ShipFromCity?: string;
-      ShipFromState?: string;
-      ShipFromZip?: string;
-      ShipMethod?: string;
-      ShipMethodDescription?: string;
-      ETADate?: string;
-      Packages?: Package[];
+  orderResponse: {
+    customerNumber: string;
+    poNumber: string;
+    code: string;
+    responseDateTime: string;
+    items: {
+      lineNumber: string;
+      sku: string;
+      orderQuantity: number;
+      code: string;
+      orderNumber: string;
+      orderType: string;
+      shipQuantity: number;
+      shipDatetime?: string;
+      mfgPn?: string;
+      productName?: string;
+      shipFromWarehouse?: string;
+      shipFromCity?: string;
+      shipFromState?: string;
+      shipFromZip?: string;
+      shipMethod?: string;
+      shipMethodDescription?: string;
+      etaDate?: string;
+      packages?: Package[];
     }[];
   };
-}
-
-export interface Package {
-  TrackingNumber: string;
-  Weight: number;
-  ShipItemQuantity: number;
-  SerialNo?: string;
-  Imei?: string;
-  MacAddress?: string;
 }
 
 export interface POStatusRequest {
@@ -287,63 +284,62 @@ export interface POStatusRequest {
 }
 
 export interface POStatusResponse {
-  OrderStatusResponse: {
-    CustomerNumber: string;
-    PONumber: string;
-    Code: string;
-    Reason?: string;
-    PODatetime?: string;
-    ResponseDateTime: string;
-    Items: {
-      Item: {
-        LineNumber: string;
-        Code: string;
-        ShipDatetime?: string;
-        OrderNumber: string;
-        OrderType: string;
-        OrderQuantity: number;
-        UnitPrice: number;
-        SKU: string;
-        MfgPN: string;
-        ProductName: string;
-        ShipQuantity: number;
-        ShipFromWarehouse?: string;
-        ShipFromCity?: string;
-        ShipFromState?: string;
-        ShipFromZip?: string;
-        ShipMethod?: string;
-        ShipMethodDescription?: string;
-        ETADate?: string;
-        Freight?: number;
-        HandlingFee?: number;
-        Tax?: number;
-        RecyclingFee?: number;
-        Packages?: Package[];
-        EstimatedDeliveryDate?: string;
-        EstimatedShipDate?: string;
-        EstimatedShipDateCode?: string;
-        VendorOrderNumber?: string;
-        CustPOLineNo?: string;
+  type: "success";
+  orderStatusResponse: {
+    customerNumber: string;
+    poNumber: string;
+    code: string;
+    reason?: string;
+    poDatetime?: string;
+    responseDateTime: string;
+    items: {
+      item: {
+        lineNumber: string;
+        code: string;
+        shipDatetime?: string;
+        orderNumber: string;
+        orderType: string;
+        orderQuantity: number;
+        unitPrice: number;
+        sku: string;
+        mfgPn: string;
+        productName: string;
+        shipQuantity: number;
+        shipFromWarehouse?: string;
+        shipFromCity?: string;
+        shipFromState?: string;
+        shipFromZip?: string;
+        shipMethod?: string;
+        shipMethodDescription?: string;
+        etaDate?: string;
+        freight?: number;
+        handlingFee?: number;
+        tax?: number;
+        recyclingFee?: number;
+        packages?: Package[];
+        estimatedDeliveryDate?: string;
+        estimatedShipDate?: string;
+        estimatedShipDateCode?: string;
+        vendorOrderNumber?: string;
+        custPoLineNo?: string;
       }[];
     };
-    ResponseElapsedTime: string;
+    responseElapsedTime: string;
   };
 }
 
 // types.ts
 
 export interface FreightQuoteRequest {
-  version: string;
-  customerNumber: string;
-  customerName: string;
-  requestDateTime: string;
+  version?: string;
+  customerNumber?: string;
+  customerName?: string;
+  requestDateTime?: string;
   shipFromWarehouse: string;
   shipToZipCode?: string;
   shipTo: {
     addressName1: string;
     addressName2?: string;
-    addressLine1: string;
-    addressLine2?: string;
     city: string;
     state: string;
     zipCode: string;
@@ -354,8 +350,8 @@ export interface FreightQuoteRequest {
   items: Array<{
     lineNumber: number;
     SKU: string;
-    mfgPartNumber: string;
-    description: string;
+    mfgPartNumber?: string;
+    description?: string;
     quantity: number;
   }>;
 }
@@ -407,41 +403,37 @@ export interface FreightQuoteResponse {
   synnexInternalReference: string;
 }
 
-/**
- * Represents a response for price and availability.
- */
 export interface PriceAvailabilityResponse {
+  type: "success";
   customerNo: string; // Customer account number
   userName: string; // User ID making the request
-  PriceAvailabilityList: Array<{
-    synnexSKU: string; // The SKU number in TD SYNNEX system
-    mfgPN: string; // Manufacturer Part Number
+  priceAvailabilityList: Array<{
+    synnexSku: string; // The SKU number in TD SYNNEX system
+    mfgPn: string; // Manufacturer Part Number
     mfgCode: string; // Manufacturer code
     status: string; // Status of the SKU (e.g., Active, Discontinued)
     description: string; // Description of the item
-    GlobalProductStatusCode: string; // Global status code of the product
+    globalProductStatusCode: string; // Global status code of the product
     price: number; // Price for the reseller
     totalQuantity: number; // Total available quantity
-    AvailabilityByWarehouse: Array<{
+    availabilityByWarehouse: Array<{
       warehouseInfo: {
         number: string; // Warehouse number
-        zipcode: string; // Zip code of the warehouse
+        zipCode: string; // Zip code of the warehouse
         city: string; // City where the warehouse is located
-        addr: string; // Address of the warehouse
+        address: string; // Address of the warehouse
       };
-      qty: number; // Quantity available in the warehouse
+      quantity: number; // Quantity available in the warehouse
     }>;
     lineNumber: number; // Line number to correlate with request
   }>;
 }
 
-// types.ts
-
 export interface FreightWithZipRequest {
-  version: string;
-  customerNumber: string;
-  customerName: string;
-  requestDateTime: string;
+  version?: string;
+  customerNumber?: string;
+  customerName?: string;
+  requestDateTime?: string;
   shipFromWarehouse: string;
   shipToZipCode: string;
   items: Array<{
@@ -452,6 +444,7 @@ export interface FreightWithZipRequest {
 }
 
 export interface FreightWithZipResponse {
+  type: "success";
   customerNumber: string;
   responseDateTime: string;
   responseElapsedTime: string;
@@ -479,3 +472,79 @@ export interface FreightWithZipResponse {
   };
   synnexInternalReference: string;
 }
+
+export interface InvoiceResponse {
+  type: "success";
+  customerPoNumber: string;
+  invoices: Invoice[];
+}
+
+export interface Invoice {
+  invoiceDate: string; // YYYY-MM-DD
+  invoiceNumber: string; // TD SYNNEX Invoice Number
+  orderType: string; // Order Type
+  approvalNumber?: string;
+  shipTo: Address;
+  billTo: Address;
+  discount: number;
+  discountDays: number;
+  paymentTermDays: number;
+  paymentTermDesc: string;
+  shipMethodCode: string;
+  shipDate: string; // YYYY-MM-DD
+  comments?: string;
+  internalReferenceNumber: string; // Invoice, Credit Memo or RMA Number
+  tracking?: Tracking;
+  items: Item[];
+  summary: Summary;
+}
+
+export interface Tracking {
+  trackNumber: string; // Package Tracking Number
+}
+
+export interface Item {
+  lineNumber: string;
+  shipQuantity: number;
+  unitPrice: number;
+  synnexPartNumber: string;
+  manufacturerPartNumber: string;
+  sku: string;
+  vendorNumber: string;
+  upcCode: string;
+  productDescription: string;
+  custPoLineNo: string;
+  serialNo: string;
+}
+
+export interface Summary {
+  totalInvoiceAmount: number;
+  allowanceOrCharge: string; // 'A' for Allowance, 'C' for Charge
+  expenseTotal: number;
+  minOrderFee: number;
+  rebate: number;
+  freight: number;
+  processingFee: number;
+  boxCharge: number;
+  totalWeight: number;
+  boxCount: number;
+  salesTax: number;
+}
+
+export interface ErrorResponse {
+  type: "error";
+  errorResponse: string;
+  errorDetail: string;
+}
+
+export type PriceAvailabilityApiResponse =
+  | PriceAvailabilityResponse
+  | ErrorResponse;
+
+export type SynnexFreightAPIResponse = FreightQuoteResponse | ErrorResponse;
+
+export type SynnexFreightWithZipAPIResponse =
+  | FreightWithZipResponse
+  | ErrorResponse;
+
+export type SynnexInvoiceAPIResponse = InvoiceResponse | ErrorResponse;
