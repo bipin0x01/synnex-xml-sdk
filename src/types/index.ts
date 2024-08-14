@@ -333,9 +333,9 @@ export interface POStatusResponse {
 // types.ts
 
 export interface FreightQuoteRequest {
-  version: string;
-  customerNumber: string;
-  customerName: string;
+  version?: string;
+  customerNumber?: string;
+  customerName?: string;
   requestDateTime: string;
   shipFromWarehouse: string;
   shipToZipCode?: string;
@@ -438,9 +438,9 @@ export interface PriceAvailabilityResponse {
 // types.ts
 
 export interface FreightWithZipRequest {
-  version: string;
-  customerNumber: string;
-  customerName: string;
+  version?: string;
+  customerNumber?: string;
+  customerName?: string;
   requestDateTime: string;
   shipFromWarehouse: string;
   shipToZipCode: string;
