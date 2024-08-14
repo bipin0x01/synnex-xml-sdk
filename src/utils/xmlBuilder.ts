@@ -54,65 +54,67 @@ export class SynnexXmlBuilder {
    * @returns The request XML as a string.
    */
   public buildCreatePORequestXml(request: SynnexB2BRequest): string {
-    const itemsXml = request.OrderRequest.Items.map(
-      (item) => `
-        <Item lineNumber="${item.LineNumber}">
-          <SKU>${item.SKU}</SKU>
-          <UnitPrice>${item.UnitPrice}</UnitPrice>
-          <OrderQuantity>${item.OrderQuantity}</OrderQuantity>
+    const itemsXml = request.OrderRequest.items
+      .map(
+        (item) => `
+        <Item lineNumber="${item.lineNumber}">
+          <SKU>${item.sku}</SKU>
+          <UnitPrice>${item.unitPrice}</UnitPrice>
+          <OrderQuantity>${item.orderQuantity}</OrderQuantity>
         </Item>`
-    ).join("");
+      )
+      .join("");
 
     return `<?xml version="1.0" encoding="UTF-8"?>
       <SynnexB2B>
         ${this.buildCredentialXml()}
         <OrderRequest>
           <accountNumber>${this.accountNumber}</accountNumber>
-          <PONumber>${request.OrderRequest.PONumber}</PONumber>
-          <DropShipFlag>${request.OrderRequest.DropShipFlag}</DropShipFlag>
-          <Shipment>
+          <PONumber>${request.OrderRequest.poNumber}</PONumber>
+          <DropShipFlag>${request.OrderRequest.dropShipFlag}</DropShipFlag>
+          <shipment>
             <ShipFromWarehouse>${
-              request.OrderRequest.Shipment.ShipFromWarehouse
+              request.OrderRequest.shipment.ShipFromWarehouse
             }</ShipFromWarehouse>
             <ShipTo>
               <AddressName1>${
-                request.OrderRequest.Shipment.ShipTo.AddressName1
+                request.OrderRequest.shipment.ShipTo.addressName1
               }</AddressName1>
               <AddressLine1>${
-                request.OrderRequest.Shipment.ShipTo.AddressLine1
+                request.OrderRequest.shipment.ShipTo.addressLine1
               }</AddressLine1>
-              <City>${request.OrderRequest.Shipment.ShipTo.City}</City>
-              <State>${request.OrderRequest.Shipment.ShipTo.State}</State>
-              <ZipCode>${request.OrderRequest.Shipment.ShipTo.ZipCode}</ZipCode>
-              <Country>${request.OrderRequest.Shipment.ShipTo.Country}</Country>
+              <City>${request.OrderRequest.shipment.ShipTo.city}</City>
+              <State>${request.OrderRequest.shipment.ShipTo.state}</State>
+              <ZipCode>${request.OrderRequest.shipment.ShipTo.zipCode}</ZipCode>
+              <Country>${request.OrderRequest.shipment.ShipTo.country}</Country>
             </ShipTo>
             <ShipToContact>
               <ContactName>${
-                request.OrderRequest.Shipment.ShipToContact.ContactName
+                request.OrderRequest.shipment.ShipToContact.contactName
               }</ContactName>
               <PhoneNumber>${
-                request.OrderRequest.Shipment.ShipToContact.PhoneNumber
+                request.OrderRequest.shipment.ShipToContact.phoneNumber
               }</PhoneNumber>
               <EmailAddress>${
-                request.OrderRequest.Shipment.ShipToContact.EmailAddress
+                request.OrderRequest.shipment.ShipToContact.emailAddress
               }</EmailAddress>
             </ShipToContact>
             <ShipMethod>
-              <Code>${request.OrderRequest.Shipment.ShipMethod.Code}</Code>
+              <Code>${request.OrderRequest.shipment.ShipMethod.code}</Code>
             </ShipMethod>
-          </Shipment>
+          </shipment>
           <Payment>
             <BillTo code=${this.accountNumber}>
               <AddressName1>${
-                request.OrderRequest.Payment.BillTo.AddressName1
+                request.OrderRequest.payment.billTo.addressName1
               }</AddressName1>
               <AddressLine1>${
-                request.OrderRequest.Payment.BillTo.AddressLine1
+                request.OrderRequest.payment.billTo.addressLine1
               }</AddressLine1>
-              <City>${request.OrderRequest.Payment.BillTo.City}</City>
-              <State>${request.OrderRequest.Payment.BillTo.State}</State>
-              <ZipCode>${request.OrderRequest.Payment.BillTo.ZipCode}</ZipCode>
-              <Country>${request.OrderRequest.Payment.BillTo.Country}</Country>
+              <City>${request.OrderRequest.payment.billTo.city}</City>
+              <State>${request.OrderRequest.payment.billTo.state}</State>
+              <ZipCode>${request.OrderRequest.payment.billTo.zipCode}</ZipCode>
+              <Country>${request.OrderRequest.payment.billTo.country}</Country>
             </BillTo>
           </Payment>
           <Items>${itemsXml}</Items>
@@ -187,8 +189,6 @@ export class SynnexXmlBuilder {
     const shipToXml = `<ShipTo>
           <AddressName1>${request.shipTo.addressName1}</AddressName1>
           <AddressName2>${request.shipTo.addressName2 || ""}</AddressName2>
-          <AddressLine1>${request.shipTo.addressLine1}</AddressLine1>
-          <AddressLine2>${request.shipTo.addressLine2 || ""}</AddressLine2>
           <City>${request.shipTo.city}</City>
           <State>${request.shipTo.state}</State>
           <ZipCode>${request.shipTo.zipCode}</ZipCode>

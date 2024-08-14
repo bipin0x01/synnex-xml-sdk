@@ -11,6 +11,11 @@ import {
   FreightWithZipRequest,
   FreightWithZipResponse,
   SynnexClientConfig,
+  ErrorResponse,
+  PriceAvailabilityApiResponse,
+  SynnexFreightAPIResponse,
+  SynnexFreightWithZipAPIResponse,
+  SynnexInvoiceAPIResponse,
 } from "./types";
 import { parseXmlToJson } from "./utils/parser";
 import SynnexXmlBuilder from "./utils/xmlBuilder";
@@ -27,7 +32,7 @@ export class SynnexClient {
    *
    * @param config - The configuration object for the client.
    */
-  constructor(config: SynnexClientConfig) {
+  constructor(private config: SynnexClientConfig) {
     this.xmlBuilder = new SynnexXmlBuilder(
       config.username,
       config.password,
@@ -44,27 +49,41 @@ export class SynnexClient {
   }
 
   /**
-   * Determine the base URL based on the environment and country.
+   * Determine the base URL based on the environment, country, and API type.
    *
    * @param environment - The environment to use ('sandbox' or 'production').
    * @param country - The country code ('US' or 'CA').
+   * @param apiType - The type of API being used ('default' or 'invoice').
    * @returns The base URL as a string.
    */
   private getBaseUrl(
     environment: "sandbox" | "production",
-    country: CountryCode
+    country: CountryCode,
+    apiType: "default" | "invoice" = "default"
   ): string {
     const urls = {
       sandbox: {
-        US: "https://testec.us.tdsynnex.com",
-        CA: "https://testec.ca.tdsynnex.com",
+        default: {
+          US: "https://testec.us.tdsynnex.com",
+          CA: "https://testec.ca.tdsynnex.com",
+        },
+        invoice: {
+          US: "https://testws.us.tdsynnex.com/webservice/invoice/query",
+          CA: "https://testws.ca.tdsynnex.com/webservice/invoice/query",
+        },
       },
       production: {
-        US: "https://ec.us.tdsynnex.com",
-        CA: "https://ec.ca.tdsynnex.com",
+        default: {
+          US: "https://ec.us.tdsynnex.com",
+          CA: "https://ec.ca.tdsynnex.com",
+        },
+        invoice: {
+          US: "https://ws.us.tdsynnex.com/webservice/invoice/query",
+          CA: "https://ws.ca.tdsynnex.com/webservice/invoice/query",
+        },
       },
     };
-    return urls[environment][country];
+    return urls[environment][apiType][country];
   }
 
   /**
@@ -112,23 +131,27 @@ export class SynnexClient {
   }
 
   /**
-   * Get price and availability for a list of SKUs.
+   * Retrieves the price and availability for a list of SKUs.
    *
    * @param skus - The list of SKUs to query price and availability for.
-   * @returns A promise that resolves to the price and availability response.
-   * @throws An error if the request fails.
+   * @returns A promise that resolves to the price and availability response or an error response.
    */
   public async getPriceAvailability(
     skus: string[]
-  ): Promise<PriceAvailabilityResponse> {
+  ): Promise<PriceAvailabilityApiResponse> {
     try {
       const requestXml = this.xmlBuilder.buildPriceAvailabilityRequestXml(skus);
-      const response = await this.axiosInstance.post(
+      const { data } = await this.axiosInstance.post(
         "/SynnexXML/PriceAvailability",
         requestXml
       );
-      const result = await parseXmlToJson(response.data);
-      return result;
+      const result = await parseXmlToJson(data);
+      if (result.errorDetail) {
+        result.type = "error";
+        return result as ErrorResponse;
+      }
+      result.type = "success";
+      return result as PriceAvailabilityResponse;
     } catch (error: any) {
       throw new Error(`Failed to get price and availability: ${error.message}`);
     }
@@ -143,7 +166,7 @@ export class SynnexClient {
    */
   public async getFreightQuote(
     request: FreightQuoteRequest
-  ): Promise<FreightQuoteResponse> {
+  ): Promise<SynnexFreightAPIResponse> {
     try {
       const requestXml = this.xmlBuilder.buildFreightQuoteRequestXml(request);
       const response = await this.axiosInstance.post(
@@ -151,10 +174,12 @@ export class SynnexClient {
         requestXml
       );
       const result = await parseXmlToJson(response.data);
-      if (!result.freightquoteresponse) {
-        throw new Error(result.errordetail);
+      if (result.errorDetail) {
+        result.type = "error";
+        return result as ErrorResponse;
       }
-      return result.freightquoteresponse;
+      result.type = "success";
+      return result.freightQuoteResponse as FreightQuoteResponse;
     } catch (error: any) {
       throw new Error(`Failed to get freight quote: ${error.message}`);
     }
@@ -169,7 +194,7 @@ export class SynnexClient {
    */
   public async getFreightWithZip(
     request: FreightWithZipRequest
-  ): Promise<FreightWithZipResponse> {
+  ): Promise<SynnexFreightWithZipAPIResponse> {
     try {
       const requestXml = this.xmlBuilder.buildFreightWithZipRequestXml(request);
       const response = await this.axiosInstance.post(
@@ -177,10 +202,12 @@ export class SynnexClient {
         requestXml
       );
       const result = await parseXmlToJson(response.data);
-      if (!result.freightQuoteResponse) {
-        throw new Error(result.errorDetail);
+      if (result.errorDetail) {
+        result.type = "error";
+        return result as ErrorResponse;
       }
-      return result.freightQuoteResponse;
+      result.type = "success";
+      return result.freightQuoteResponse as FreightWithZipResponse;
     } catch (error: any) {
       throw new Error(
         `Failed to get freight quote with zip code: ${error.message}`
@@ -199,18 +226,26 @@ export class SynnexClient {
   public async getInvoice(
     poNumber?: string,
     orderNumber?: string
-  ): Promise<any> {
+  ): Promise<SynnexInvoiceAPIResponse> {
     try {
+      const baseUrl = this.getBaseUrl(
+        this.config.environment,
+        this.config.country,
+        "invoice"
+      );
       const requestXml = this.xmlBuilder.buildInvoiceRequestXml(
         poNumber,
         orderNumber
       );
-      const response = await this.axiosInstance.post(
-        "/webservice/invoice/query",
-        requestXml
-      );
+      const response = await this.axiosInstance.post(baseUrl, requestXml);
+
       const result = await parseXmlToJson(response.data);
-      return result;
+      if (result.errorDetail) {
+        result.type = "error";
+        return result as ErrorResponse;
+      }
+      result.type = "success";
+      return result.invoiceResponse;
     } catch (error: any) {
       throw new Error(`Failed to get invoice: ${error.message}`);
     }
