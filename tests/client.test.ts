@@ -35,7 +35,7 @@ describe("SynnexClient", () => {
   });
 
   it("should get the code of purchase order not found", async () => {
-    const statusRequest: POStatusRequest = { PONumber: "PO12345" };
+    const statusRequest: POStatusRequest = { poNumber: "PO12345" };
 
     const response = await client.getOrderStatus(statusRequest);
     expect(response).toBeDefined();
