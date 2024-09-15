@@ -222,11 +222,11 @@ export interface OrderRequest {
 }
 
 export interface Shipment {
-  ShipFromWarehouse: string;
-  ShipTo: Address;
-  ShipToContact: Contact;
-  ShipMethod: ShipMethod;
-  FreightAccountNumber?: string;
+  shipFromWarehouse: string;
+  shipTo: Address;
+  shipToContact: Contact;
+  shipMethod: ShipMethod;
+  freightAccountNumber?: string;
 }
 
 export interface ShipMethod {
@@ -280,7 +280,7 @@ export interface SynnexB2BResponse {
 }
 
 export interface POStatusRequest {
-  PONumber: string;
+  poNumber: string;
 }
 
 export interface POStatusResponse {
