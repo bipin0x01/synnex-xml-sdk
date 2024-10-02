@@ -69,42 +69,42 @@ export class SynnexXmlBuilder {
       <SynnexB2B>
         ${this.buildCredentialXml()}
         <OrderRequest>
-          <accountNumber>${this.accountNumber}</accountNumber>
+          <CustomerNumber>${this.accountNumber}</CustomerNumber>
           <PONumber>${request.OrderRequest.poNumber}</PONumber>
           <DropShipFlag>${request.OrderRequest.dropShipFlag}</DropShipFlag>
-          <shipment>
+          <Shipment>
             <ShipFromWarehouse>${
-              request.OrderRequest.shipment.ShipFromWarehouse
+              request.OrderRequest.shipment.shipFromWarehouse
             }</ShipFromWarehouse>
             <ShipTo>
               <AddressName1>${
-                request.OrderRequest.shipment.ShipTo.addressName1
+                request.OrderRequest.shipment.shipTo.addressName1
               }</AddressName1>
               <AddressLine1>${
-                request.OrderRequest.shipment.ShipTo.addressLine1
+                request.OrderRequest.shipment.shipTo.addressLine1
               }</AddressLine1>
-              <City>${request.OrderRequest.shipment.ShipTo.city}</City>
-              <State>${request.OrderRequest.shipment.ShipTo.state}</State>
-              <ZipCode>${request.OrderRequest.shipment.ShipTo.zipCode}</ZipCode>
-              <Country>${request.OrderRequest.shipment.ShipTo.country}</Country>
+              <City>${request.OrderRequest.shipment.shipTo.city}</City>
+              <State>${request.OrderRequest.shipment.shipTo.state}</State>
+              <ZipCode>${request.OrderRequest.shipment.shipTo.zipCode}</ZipCode>
+              <Country>${request.OrderRequest.shipment.shipTo.country}</Country>
             </ShipTo>
             <ShipToContact>
               <ContactName>${
-                request.OrderRequest.shipment.ShipToContact.contactName
+                request.OrderRequest.shipment.shipToContact.contactName
               }</ContactName>
               <PhoneNumber>${
-                request.OrderRequest.shipment.ShipToContact.phoneNumber
+                request.OrderRequest.shipment.shipToContact.phoneNumber
               }</PhoneNumber>
               <EmailAddress>${
-                request.OrderRequest.shipment.ShipToContact.emailAddress
+                request.OrderRequest.shipment.shipToContact.emailAddress
               }</EmailAddress>
             </ShipToContact>
             <ShipMethod>
-              <Code>${request.OrderRequest.shipment.ShipMethod.code}</Code>
+              <Code>${request.OrderRequest.shipment.shipMethod.code}</Code>
             </ShipMethod>
-          </shipment>
+          </Shipment>
           <Payment>
-            <BillTo code=${this.accountNumber}>
+            <BillTo code="${this.accountNumber}">
               <AddressName1>${
                 request.OrderRequest.payment.billTo.addressName1
               }</AddressName1>
@@ -134,7 +134,7 @@ export class SynnexXmlBuilder {
         ${this.buildCredentialXml()}
         <OrderStatusRequest>
           <CustomerNumber>${this.accountNumber}</CustomerNumber>
-          <PONumber>${request.PONumber}</PONumber>
+          <PONumber>${request.poNumber}</PONumber>
         </OrderStatusRequest>
       </SynnexB2B>`;
   }

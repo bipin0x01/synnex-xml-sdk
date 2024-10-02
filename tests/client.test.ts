@@ -62,6 +62,7 @@ describe("SynnexClient", () => {
     const skus = ["3333964", "3333964"];
     const response = await client.getPriceAvailability(skus);
 
+    console.log(response);
     expect(response).toBeDefined();
 
     expect(response.type).toBe("success");
@@ -96,18 +97,81 @@ describe("SynnexClient", () => {
     }
   });
 
-  // it("should return invoice request", async () => {
-  //   const request = {
-  //     poNumber: "123456",
-  //   };
+  it("should create a PO", async () => {
+    const request: SynnexB2BRequest = {
+      OrderRequest: {
+        customerNumber: "780980",
+        dropShipFlag: DropShipFlag.Yes,
+        poNumber: "INSP09232020-A",
+        shipment: {
+          shipFromWarehouse: "12",
+          shipTo: {
+            addressName1: "29300 Valley Center Road",
+            addressLine1: "29300 Valley Center Road",
+            city: "Valley Center",
+            state: "CA",
+            zipCode: "92082",
+            country: "US",
+          },
+          shipToContact: {
+            contactName: "Ando Pilve",
+            phoneNumber: "",
+            emailAddress: "zqt9brp3dkjrdk3@marketplace.amazon.com",
+          },
+          shipMethod: {
+            code: "BWG" as USShipMethodCode,
+          },
+        },
+        payment: {
+          billTo: {
+            addressName1: "29300 Valley Center Road",
+            addressLine1: "29300 Valley Center Road",
+            city: "Valley Center",
+            state: "CA",
+            zipCode: "92082",
+            country: "US",
+          },
+        },
+        items: [
+          {
+            lineNumber: "1",
+            sku: "6086017",
+            unitPrice: 1353.56,
+            orderQuantity: 1,
+            shipQuantity: 0,
+            synnexPartNumber: "",
+            manufacturerPartNumber: "",
+            vendorNumber: "",
+            upcCode: "",
+            productDescription: "",
+            custPoLineNo: "",
+            serialNo: "",
+          },
+          {
+            lineNumber: "2",
+            sku: "7481354",
+            unitPrice: 1353.56,
+            orderQuantity: 1,
+            shipQuantity: 0,
+            synnexPartNumber: "",
+            manufacturerPartNumber: "",
+            vendorNumber: "",
+            upcCode: "",
+            productDescription: "",
+            custPoLineNo: "",
+            serialNo: "",
+          },
+        ],
+      },
+    };
 
-  //   const response = await client.getInvoice(request.poNumber);
+    const response = await client.submitPO(request);
+    console.log(response);
 
-  //   expect(response).toBeDefined();
-  //   console.log(response);
-  //   if (response.type === "success") {
-  //     console.log(response);
-  //     expect(response.invoices).toBeDefined();
-  //   }
-  // });
+    expect(response).toBeDefined();
+    // if (response.type === "success") {
+    //   console.log(response);
+    //   expect(response.invoices).toBeDefined();
+    // }
+  });
 });

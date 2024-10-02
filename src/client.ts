@@ -96,6 +96,7 @@ export class SynnexClient {
   public async submitPO(request: SynnexB2BRequest): Promise<SynnexB2BResponse> {
     try {
       const requestXml = this.xmlBuilder.buildCreatePORequestXml(request);
+      console.log(requestXml);
       const response = await this.axiosInstance.post(
         "/SynnexXML/PO",
         requestXml
@@ -103,6 +104,7 @@ export class SynnexClient {
       const result = await parseXmlToJson(response.data);
       return result;
     } catch (error: any) {
+      console.log(error);
       throw new Error(`Failed to submit PO: ${error.message}`);
     }
   }
