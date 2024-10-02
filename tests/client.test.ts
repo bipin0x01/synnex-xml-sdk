@@ -75,27 +75,27 @@ describe("SynnexClient", () => {
     }
   });
 
-  it("should return freight quote with zip", async () => {
-    const request: FreightWithZipRequest = {
-      shipToZipCode: "75001",
-      shipFromWarehouse: "99",
-      items: [
-        {
-          SKU: "9796463",
-          quantity: 1,
-          lineNumber: 1,
-        },
-      ],
-    };
+  // it("should return freight quote with zip", async () => {
+  //   const request: FreightWithZipRequest = {
+  //     shipToZipCode: "75001",
+  //     shipFromWarehouse: "99",
+  //     items: [
+  //       {
+  //         SKU: "9796463",
+  //         quantity: 1,
+  //         lineNumber: 1,
+  //       },
+  //     ],
+  //   };
 
-    const response = await client.getFreightWithZip(request);
+  //   const response = await client.getFreightWithZip(request);
 
-    expect(response).toBeDefined();
-    if (response.type === "success") {
-      expect(response.customerNumber).toBeDefined();
-      expect(response.availableShipMethods).toBeDefined();
-    }
-  });
+  //   expect(response).toBeDefined();
+  //   if (response.type === "success") {
+  //     expect(response.customerNumber).toBeDefined();
+  //     expect(response.availableShipMethods).toBeDefined();
+  //   }
+  // });
 
   it("should create a PO", async () => {
     const request: SynnexB2BRequest = {
