@@ -101,7 +101,7 @@ export class SynnexXmlBuilder {
             </ShipToContact>
 
             <ShipMethod>
-              <Code>${request.OrderRequest.shipment.shipMethod?.code || "FX"}</Code>
+              <Code>${request.OrderRequest.shipment?.shipMethod?.code || "FX"}</Code>
             </ShipMethod>
           </Shipment>
           <Payment>
