@@ -99,8 +99,9 @@ export class SynnexXmlBuilder {
                 request.OrderRequest.shipment.shipToContact.emailAddress
               }</EmailAddress>
             </ShipToContact>
+
             <ShipMethod>
-              <Code>${request.OrderRequest.shipment.shipMethod.code}</Code>
+              <Code>${request.OrderRequest.shipment.shipMethod?.code || "FX"}</Code>
             </ShipMethod>
           </Shipment>
           <Payment>
