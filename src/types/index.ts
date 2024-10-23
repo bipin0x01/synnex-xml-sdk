@@ -222,10 +222,10 @@ export interface OrderRequest {
 }
 
 export interface Shipment {
-  shipFromWarehouse: string;
+  shipFromWarehouse?: string;
   shipTo: Address;
   shipToContact: Contact;
-  shipMethod: ShipMethod;
+  shipMethod?: ShipMethod;
   freightAccountNumber?: string;
 }
 
