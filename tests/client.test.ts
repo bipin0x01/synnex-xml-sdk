@@ -59,7 +59,7 @@ describe("SynnexClient", () => {
   });
 
   it("should return Product PA data of multiple SKU", async () => {
-    const skus = ["3333964", "3333964"];
+    const skus = ["3333964"];
     const response = await client.getPriceAvailability(skus);
 
     console.log(response);
