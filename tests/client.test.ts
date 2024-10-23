@@ -50,7 +50,6 @@ describe("SynnexClient", () => {
     expect(response).toBeDefined();
 
     expect(response.type).toBe("success");
-
     if (response.type === "success") {
       expect(response.customerNo).toBeDefined();
       expect(response.customerNo).toBe(config.accountNumber);
@@ -59,7 +58,7 @@ describe("SynnexClient", () => {
   });
 
   it("should return Product PA data of multiple SKU", async () => {
-    const skus = ["3333964"];
+    const skus = ["3333964","3333964"];
     const response = await client.getPriceAvailability(skus);
 
     console.log(response);
@@ -102,7 +101,7 @@ describe("SynnexClient", () => {
       OrderRequest: {
         customerNumber: "780980",
         dropShipFlag: DropShipFlag.Yes,
-        poNumber: "INSP09232020-A",
+        poNumber: "INSP09232012",
         shipment: {
           shipFromWarehouse: "12",
           shipTo: {
