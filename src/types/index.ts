@@ -219,6 +219,33 @@ export interface OrderRequest {
   shipment: Shipment;
   payment: Payment;
   items: Item[];
+  endUserPoNumber?: string;
+  softWareLicense?: SoftwareLicense;
+}
+
+export interface SoftwareLicense {
+  authorizationNumber: string;
+  reOrder: string;
+  licensee: Licensee;
+}
+
+export interface Licensee {
+  addressName1: string;
+  addressName2?: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: CountryCode;
+  licenseeContact: LicenseeContact;
+}
+
+export interface LicenseeContact {
+  contactName: string;
+  phoneNumber: string;
+  faxNumber: string;
+  emailAddress: string;
 }
 
 export interface Shipment {

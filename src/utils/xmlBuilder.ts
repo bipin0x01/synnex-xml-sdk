@@ -65,6 +65,30 @@ export class SynnexXmlBuilder {
       )
       .join("");
 
+    const softwareLicenseXml = `
+        <SoftWareLicense>
+          <AuthorizationNumber>${request.OrderRequest.softWareLicense?.authorizationNumber}</AuthorizationNumber>
+          <ReOrder>Y</ReOrder>
+          <Licensee>
+            <AddressName1>${request.OrderRequest.softWareLicense?.licensee.addressName1}</AddressName1>
+            <AddressName2>${request.OrderRequest.softWareLicense?.licensee.addressName2}</AddressName2>
+            <AddressLine1>${request.OrderRequest.softWareLicense?.licensee.addressLine1}</AddressLine1>
+            <AddressLine2>${request.OrderRequest.softWareLicense?.licensee.addressLine2}</AddressLine2>
+            <City>${request.OrderRequest.softWareLicense?.licensee.city}</City>
+            <State>${request.OrderRequest.softWareLicense?.licensee.state}</State>
+            <ZipCode>${request.OrderRequest.softWareLicense?.licensee.zipCode}</ZipCode>
+            <Country>${request.OrderRequest.softWareLicense?.licensee.country}</Country>
+            <LicenseeContact>
+              <ContactName>${request.OrderRequest.softWareLicense?.licensee.licenseeContact.contactName}</ContactName>
+              <PhoneNumber>${request.OrderRequest.softWareLicense?.licensee.licenseeContact.phoneNumber}</PhoneNumber>
+              <FaxNumber>${request.OrderRequest.softWareLicense?.licensee.licenseeContact.faxNumber}</FaxNumber>
+              <EmailAddress>${request.OrderRequest.softWareLicense?.licensee.licenseeContact.emailAddress}</EmailAddress>
+            </LicenseeContact>
+          </Licensee>
+        </SoftWareLicense>`;
+
+    const endUserPoXml = `<EndUserPONumber>${request.OrderRequest.endUserPoNumber}</EndUserPONumber>`;
+
     return `<?xml version="1.0" encoding="UTF-8"?>
       <SynnexB2B>
         ${this.buildCredentialXml()}
@@ -118,6 +142,8 @@ export class SynnexXmlBuilder {
             </BillTo>
           </Payment>
           <Items>${itemsXml}</Items>
+          ${request.OrderRequest.softWareLicense && softwareLicenseXml}
+          ${request.OrderRequest.endUserPoNumber && endUserPoXml}
         </OrderRequest>
       </SynnexB2B>`;
   }
