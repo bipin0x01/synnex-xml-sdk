@@ -249,10 +249,10 @@ export interface LicenseeContact {
 }
 
 export interface Shipment {
-  shipFromWarehouse: string;
+  shipFromWarehouse?: string;
   shipTo: Address;
   shipToContact: Contact;
-  shipMethod: ShipMethod;
+  shipMethod?: ShipMethod;
   freightAccountNumber?: string;
 }
 
@@ -450,7 +450,7 @@ export interface PriceAvailabilityResponse {
         city: string; // City where the warehouse is located
         address: string; // Address of the warehouse
       };
-      quantity: number; // Quantity available in the warehouse
+      qty: number; // Quantity available in the warehouse
     }>;
     lineNumber: number; // Line number to correlate with request
   }>;
