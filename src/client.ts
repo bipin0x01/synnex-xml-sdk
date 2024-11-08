@@ -126,6 +126,25 @@ export class SynnexClient {
         requestXml
       );
       const result = await parseXmlToJson(response.data);
+
+      // TODO : hotfix for array iteration
+      result.orderStatusResponse.items = Array.isArray(
+        result.orderStatusResponse.items.item
+      )
+        ? result.orderStatusResponse.items.item
+        : [result.orderStatusResponse.items.item];
+
+      // Ensure each item's packages.package is always an array
+      result.orderStatusResponse.items = result.orderStatusResponse.items.map(
+        (item: { packages: any }) => {
+          item.packages = Array.isArray(item.packages.package)
+            ? item.packages.package
+            : [item.packages.package];
+
+          return item;
+        }
+      );
+
       return result;
     } catch (error: any) {
       throw new Error(`Failed to get PO status: ${error.message}`);
