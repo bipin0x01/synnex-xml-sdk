@@ -3,6 +3,7 @@ import {
   POStatusRequest,
   FreightQuoteRequest,
   FreightWithZipRequest,
+  SpecialPriceType,
 } from "../types";
 
 /**
@@ -89,6 +90,10 @@ export class SynnexXmlBuilder {
 
     const endUserPoXml = `<EndUserPONumber>${request.OrderRequest.endUserPoNumber}</EndUserPONumber>`;
 
+    const commentXml = `<Comment>${request.OrderRequest.comment}</Comment>`;
+
+    const specialPriceTypeXml = `<SpecialPriceType>${request.OrderRequest.specialPriceType}</SpecialPriceType>`;
+    const specialPriceReferenceNumberXml = `<SpecialPriceReferenceNumber>${request.OrderRequest.specialPriceReferenceNumber}</SpecialPriceReferenceNumber>`;
     return `<?xml version="1.0" encoding="UTF-8"?>
       <SynnexB2B>
         ${this.buildCredentialXml()}
@@ -125,7 +130,9 @@ export class SynnexXmlBuilder {
             </ShipToContact>
 
             <ShipMethod>
-              <Code>${request.OrderRequest.shipment?.shipMethod?.code || "FX"}</Code>
+              <Code>${
+                request.OrderRequest.shipment?.shipMethod?.code || "FX"
+              }</Code>
             </ShipMethod>
           </Shipment>
           <Payment>
@@ -145,6 +152,14 @@ export class SynnexXmlBuilder {
           <Items>${itemsXml}</Items>
           ${request.OrderRequest.softWareLicense && softwareLicenseXml}
           ${request.OrderRequest.endUserPoNumber && endUserPoXml}
+          ${request.OrderRequest.comment && commentXml}
+          ${request.OrderRequest.specialPriceType && specialPriceTypeXml}
+          ${
+            request.OrderRequest.specialPriceReferenceNumber &&
+            request.OrderRequest.specialPriceType ==
+              SpecialPriceType.VENDOR_PROMOTION &&
+            specialPriceReferenceNumberXml
+          }
         </OrderRequest>
       </SynnexB2B>`;
   }

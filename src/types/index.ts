@@ -221,6 +221,18 @@ export interface OrderRequest {
   items: Item[];
   endUserPoNumber?: string;
   softWareLicense?: SoftwareLicense;
+  comment?: string;
+  backOrderFlag?: "Y" | "N";
+  specialHandle?: "Y" | "N";
+  specialPriceType?: SpecialPriceType;
+  specialPriceReferenceNumber?: string;
+}
+
+export enum SpecialPriceType {
+  VENDOR_PROMOTION = "VendorPromotion",
+  FEDERAL_GOVERNMENT = "FederalGovernment",
+  STATE_GOVERNMENT = "StateGovernment",
+  EDUCATION = "Education",
 }
 
 export interface SoftwareLicense {
