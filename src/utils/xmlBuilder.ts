@@ -94,11 +94,32 @@ export class SynnexXmlBuilder {
 
     const specialPriceTypeXml = `<SpecialPriceType>${request.OrderRequest.specialPriceType}</SpecialPriceType>`;
     const specialPriceReferenceNumberXml = `<SpecialPriceReferenceNumber>${request.OrderRequest.specialPriceReferenceNumber}</SpecialPriceReferenceNumber>`;
+
+    const paymentXmlWithAddress = `
+      <Payment>
+      <BillTo code="${this.accountNumber}">
+        <AddressName1>${request.OrderRequest.payment?.billTo.addressName1}</AddressName1>
+        <AddressName2>${request.OrderRequest.payment?.billTo.addressName2}</AddressName2>
+        <AddressLine1>${request.OrderRequest.payment?.billTo.addressLine1}</AddressLine1>
+        <AddressLine2>${request.OrderRequest.payment?.billTo.addressLine2}</AddressLine2>
+        <City>${request.OrderRequest.payment?.billTo.city}</City>
+        <State>${request.OrderRequest.payment?.billTo.state}</State>
+        <ZipCode>${request.OrderRequest.payment?.billTo.zipCode}</ZipCode>
+      </BillTo>
+    </Payment>`;
+
+    const paymentXml = `
+      <Payment>
+      <BillTo code="${this.accountNumber || request.OrderRequest.customerNumber}">
+      </BillTo>
+    </Payment>`;
+
+
     return `<?xml version="1.0" encoding="UTF-8"?>
       <SynnexB2B>
         ${this.buildCredentialXml()}
         <OrderRequest>
-          <CustomerNumber>${this.accountNumber}</CustomerNumber>
+          <CustomerNumber>${this.accountNumber || request.OrderRequest.customerNumber}</CustomerNumber>
           <PONumber>${request.OrderRequest.poNumber}</PONumber>
           <DropShipFlag>${request.OrderRequest.dropShipFlag}</DropShipFlag>
           <Shipment>
@@ -135,20 +156,7 @@ export class SynnexXmlBuilder {
               }</Code>
             </ShipMethod>
           </Shipment>
-          <Payment>
-            <BillTo code="${this.accountNumber}">
-              <AddressName1>${
-                request.OrderRequest.payment.billTo.addressName1
-              }</AddressName1>
-              <AddressLine1>${
-                request.OrderRequest.payment.billTo.addressLine1
-              }</AddressLine1>
-              <City>${request.OrderRequest.payment.billTo.city}</City>
-              <State>${request.OrderRequest.payment.billTo.state}</State>
-              <ZipCode>${request.OrderRequest.payment.billTo.zipCode}</ZipCode>
-              <Country>${request.OrderRequest.payment.billTo.country}</Country>
-            </BillTo>
-          </Payment>
+          ${request.OrderRequest.payment ? paymentXmlWithAddress : paymentXml}
           <Items>${itemsXml}</Items>
           ${request.OrderRequest.softWareLicense && softwareLicenseXml}
           ${request.OrderRequest.endUserPoNumber && endUserPoXml}

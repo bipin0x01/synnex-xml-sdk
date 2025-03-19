@@ -189,7 +189,9 @@ export enum CAWarehouseLocation {
 
 export interface Address {
   addressName1: string;
+  addressName2?: string;
   addressLine1?: string;
+  addressLine2?: string;
   city: string;
   state: string;
   zipCode: string;
@@ -217,7 +219,7 @@ export interface OrderRequest {
   poNumber: string;
   dropShipFlag: DropShipFlag;
   shipment: Shipment;
-  payment: Payment;
+  payment?: Payment;
   items: Item[];
   endUserPoNumber?: string;
   softWareLicense?: SoftwareLicense;
