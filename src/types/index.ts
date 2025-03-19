@@ -289,35 +289,37 @@ export interface Package {
 export interface SynnexB2BRequest {
   OrderRequest: OrderRequest;
 }
-export interface SynnexB2BResponse {
-  orderResponse: {
-    customerNumber: string;
-    poNumber: string;
-    code: string;
-    responseDateTime: string;
-    items: {
-      lineNumber: string;
-      sku: string;
-      orderQuantity: number;
-      code: string;
-      orderNumber: string;
-      orderType: string;
-      shipQuantity: number;
-      shipDatetime?: string;
-      mfgPn?: string;
-      productName?: string;
-      shipFromWarehouse?: string;
-      shipFromCity?: string;
-      shipFromState?: string;
-      shipFromZip?: string;
-      shipMethod?: string;
-      shipMethodDescription?: string;
-      etaDate?: string;
-      packages?: Package[];
-    }[];
-  };
-}
 
+interface SynnexB2BResponseData {
+  type: "success";
+  customerNumber: string;
+  poNumber: string;
+  code: string;
+  responseDateTime: string;
+  items: {
+    lineNumber: string;
+    sku: string;
+    orderQuantity: number;
+    code: string;
+    orderNumber: string;
+    orderType: string;
+    shipQuantity: number;
+    shipDatetime?: string;
+    mfgPn?: string;
+    productName?: string;
+    shipFromWarehouse?: string;
+    shipFromCity?: string;
+    shipFromState?: string;
+    shipFromZip?: string;
+    shipMethod?: string;
+    shipMethodDescription?: string;
+    etaDate?: string;
+    packages?: Package[];
+  }[];
+}
+export interface SynnexB2BResponse {
+  orderResponse: SynnexB2BResponseData | ErrorResponse;
+}
 export interface POStatusRequest {
   poNumber: string;
 }
@@ -541,17 +543,10 @@ export interface Tracking {
 }
 
 export interface Item {
-  lineNumber: string;
-  shipQuantity: number;
-  unitPrice: number;
-  synnexPartNumber: string;
-  manufacturerPartNumber: string;
   sku: string;
-  vendorNumber: string;
-  upcCode: string;
-  productDescription: string;
-  custPoLineNo: string;
-  serialNo: string;
+  unitPrice: number;
+  orderQuantity: number;
+  lineNumber: string;
 }
 
 export interface Summary {
@@ -585,3 +580,4 @@ export type SynnexFreightWithZipAPIResponse =
   | ErrorResponse;
 
 export type SynnexInvoiceAPIResponse = InvoiceResponse | ErrorResponse;
+
