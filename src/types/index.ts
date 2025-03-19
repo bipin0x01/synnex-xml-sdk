@@ -265,7 +265,7 @@ export interface LicenseeContact {
 export interface Shipment {
   shipFromWarehouse?: string;
   shipTo: Address;
-  shipToContact: Contact;
+  shipToContact?: Contact;
   shipMethod?: ShipMethod;
   freightAccountNumber?: string;
 }

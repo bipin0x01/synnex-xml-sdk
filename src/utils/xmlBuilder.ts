@@ -138,17 +138,19 @@ export class SynnexXmlBuilder {
               <ZipCode>${request.OrderRequest.shipment.shipTo.zipCode}</ZipCode>
               <Country>${request.OrderRequest.shipment.shipTo.country}</Country>
             </ShipTo>
-            <ShipToContact>
+            ${request.OrderRequest.shipment?.shipToContact &&
+            `<ShipToContact>
               <ContactName>${
-                request.OrderRequest.shipment.shipToContact.contactName
+                request.OrderRequest.shipment?.shipToContact?.contactName
               }</ContactName>
               <PhoneNumber>${
-                request.OrderRequest.shipment.shipToContact.phoneNumber
+                request.OrderRequest.shipment?.shipToContact?.phoneNumber
               }</PhoneNumber>
               <EmailAddress>${
-                request.OrderRequest.shipment.shipToContact.emailAddress
+                request.OrderRequest.shipment?.shipToContact?.emailAddress
               }</EmailAddress>
-            </ShipToContact>
+            </ShipToContact>`
+            }
 
             <ShipMethod>
               <Code>${
