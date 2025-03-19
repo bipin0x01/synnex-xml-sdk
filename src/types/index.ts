@@ -209,6 +209,7 @@ export interface Item {
   unitPrice: number;
   orderQuantity: number;
   lineNumber: string;
+  shipFromWarehouse?: string;
   customerPartNumber?: string;
   productName?: string;
   comments?: string[];

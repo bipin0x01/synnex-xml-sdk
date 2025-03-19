@@ -62,6 +62,7 @@ export class SynnexXmlBuilder {
           <SKU>${item.sku}</SKU>
           <UnitPrice>${item.unitPrice}</UnitPrice>
           <OrderQuantity>${item.orderQuantity}</OrderQuantity>
+          ${item.shipFromWarehouse && `<ShipFromWarehouse>${item.shipFromWarehouse}</ShipFromWarehouse>`}
         </Item>`
       )
       .join("");
