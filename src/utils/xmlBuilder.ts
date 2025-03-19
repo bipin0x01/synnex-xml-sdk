@@ -123,10 +123,9 @@ export class SynnexXmlBuilder {
           <CustomerNumber>${this.accountNumber || request.OrderRequest.customerNumber}</CustomerNumber>
           <PONumber>${request.OrderRequest.poNumber}</PONumber>
           <DropShipFlag>${request.OrderRequest.dropShipFlag}</DropShipFlag>
+          ${request.OrderRequest.shipFromWarehouse &&
+            `<ShipFromWarehouse>${request.OrderRequest.shipFromWarehouse}</ShipFromWarehouse>`}
           <Shipment>
-            <ShipFromWarehouse>${
-              request.OrderRequest.shipment.shipFromWarehouse
-            }</ShipFromWarehouse>
             <ShipTo>
               <AddressName1>${
                 request.OrderRequest.shipment.shipTo.addressName1

@@ -219,6 +219,7 @@ export interface OrderRequest {
   customerNumber: string;
   poNumber: string;
   dropShipFlag: DropShipFlag;
+  shipFromWarehouse?: string;
   shipment: Shipment;
   payment?: Payment;
   items: Item[];
@@ -264,7 +265,6 @@ export interface LicenseeContact {
 }
 
 export interface Shipment {
-  shipFromWarehouse?: string;
   shipTo: Address;
   shipToContact?: Contact;
   shipMethod?: ShipMethod;
