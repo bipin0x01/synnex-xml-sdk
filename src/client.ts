@@ -132,26 +132,47 @@ export class SynnexClient {
       result.type = "success";
 
       // TODO : hotfix for array iteration
-      result.orderStatusResponse.items = Array.isArray(
-        result.orderStatusResponse.items.item
-      )
-        ? result.orderStatusResponse.items.item
-        : [result.orderStatusResponse.items.item];
+      // Handle case where orderStatusResponse might not exist
+      if (!result.orderStatusResponse) {
+        result.orderStatusResponse = { items: [] };
+      }
 
-      // Ensure each item's packages.package is always an array
-      result.orderStatusResponse.items = result.orderStatusResponse.items.map(
-        (item: { packages: any }) => {
-          item.packages = Array.isArray(item.packages.package)
-            ? item.packages.package
-            : [item.packages.package];
+      // Handle case where items might not exist
+      if (!result.orderStatusResponse.items) {
+        result.orderStatusResponse.items = [];
+      } else {
+        // Normalize items to always be an array
+        result.orderStatusResponse.items = Array.isArray(
+          result.orderStatusResponse.items.item
+        )
+          ? result.orderStatusResponse.items.item
+          : result.orderStatusResponse.items.item
+          ? [result.orderStatusResponse.items.item]
+          : [];
 
-          return item;
-        }
-      );
+        // Ensure each item's packages.package is always an array
+        result.orderStatusResponse.items = result.orderStatusResponse.items.map(
+          (item: { packages?: any }) => {
+            if (!item.packages) {
+              item.packages = [];
+            } else {
+              item.packages = !item.packages.package
+                ? []
+                : Array.isArray(item.packages.package)
+                ? item.packages.package
+                : [item.packages.package];
+            }
+            return item;
+          }
+        );
+      }
 
       return result;
-    } catch (error: any) {
-      throw new Error(`Failed to get PO status: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to get PO status: ${error.message}`);
+      }
+      throw new Error("Failed to get PO status: Unknown error");
     }
   }
 
