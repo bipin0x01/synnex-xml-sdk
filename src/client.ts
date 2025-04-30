@@ -116,7 +116,7 @@ export class SynnexClient {
    */
   public async getOrderStatus(
     request: POStatusRequest
-  ): Promise<POStatusResponse> {
+  ): Promise<POStatusResponse | ErrorResponse> {
     try {
       const requestXml = this.xmlBuilder.buildStatusRequestXml(request);
       const response = await this.axiosInstance.post(
@@ -124,6 +124,12 @@ export class SynnexClient {
         requestXml
       );
       const result = await parseXmlToJson(response.data);
+
+      if (result.errorDetail) {
+        result.type = "error";
+        return result as ErrorResponse;
+      }
+      result.type = "success";
 
       // TODO : hotfix for array iteration
       result.orderStatusResponse.items = Array.isArray(

@@ -22,7 +22,6 @@ const keysToCamel = (obj: any): any => {
 export const parseXmlToJson = async (xml: string): Promise<any> => {
   try {
     // Configure parser options
-    console.log(xml);
     const options = {
       explicitArray: false, // Prevent wrapping single values in arrays
       mergeAttrs: true, // Merge attributes with child elements

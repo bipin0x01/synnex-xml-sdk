@@ -102,7 +102,6 @@ const orderRequest = {
 async function submitOrder() {
   try {
     const response = await synnexClient.submitPO(orderRequest);
-    console.log("Order submitted successfully:", response);
   } catch (error) {
     console.error("Error submitting order:", error);
   }
@@ -121,7 +120,6 @@ To check the status of a purchase order, use the `getOrderStatus` method. This m
 async function checkOrderStatus() {
   try {
     const statusResponse = await synnexClient.getOrderStatus("");
-    console.log("Order status:", statusResponse);
   } catch (error) {
     console.error("Error retrieving order status:", error);
   }
@@ -140,7 +138,6 @@ async function checkPriceAvailability() {
     const priceAvailabilityResponse = await synnexClient.getPriceAvailability(
       skus
     );
-    console.log("Price and Availability Response:", priceAvailabilityResponse);
   } catch (error) {
     console.error("Error fetching price and availability:", error);
   }
