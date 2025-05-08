@@ -284,9 +284,9 @@ export interface Package {
   trackingNumber: string;
   weight: number;
   shipItemQuantity: number;
-  serialNo?: string;
-  imei?: string;
-  macAddress?: string;
+  serialNo?: string | string[];
+  imei?: string | string[];
+  macAddress?: string | string[];
 }
 
 export interface SynnexB2BRequest {
