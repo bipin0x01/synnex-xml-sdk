@@ -23,7 +23,7 @@ export const parseXmlToJson = async (xml: string): Promise<any> => {
   try {
     // Configure parser options
     const options = {
-      explicitArray: false, // Prevent wrapping single values in arrays
+      explicitArray: true, // Prevent wrapping single values in arrays
       mergeAttrs: true, // Merge attributes with child elements
       trim: true, // Trim whitespace around text nodes
       normalizeTags: false, // Convert tags to lowercase
