@@ -130,6 +130,44 @@ export class SynnexClient {
         return result as ErrorResponse;
       }
       result.type = "success";
+
+      // TODO : hotfix for array iteration
+      // Handle case where orderStatusResponse might not exist
+      if (!result.orderStatusResponse) {
+        result.orderStatusResponse = { items: [] };
+      }
+
+      // Handle case where items might not exist
+      if (!result.orderStatusResponse.items) {
+        result.orderStatusResponse.items = [];
+      } else {
+        // Normalize items to always be an array
+        result.orderStatusResponse.items = Array.isArray(
+          result.orderStatusResponse.items.item
+        )
+          ? result.orderStatusResponse.items.item
+          : result.orderStatusResponse.items.item
+          ? [result.orderStatusResponse.items.item]
+          : [];
+
+        // Ensure each item's packages.package is always an array
+        result.orderStatusResponse.items = result.orderStatusResponse.items.map(
+          (item: { packages?: any }) => {
+            if (!item.packages) {
+              item.packages = [];
+            } else {
+              item.packages = !item.packages.package
+                ? []
+                : Array.isArray(item.packages.package)
+                ? item.packages.package
+                : [item.packages.package];
+            }
+            return item;
+          }
+        );
+      }
+
+      console.log(JSON.stringify(result, null, 2));
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
