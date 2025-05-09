@@ -167,7 +167,6 @@ export class SynnexClient {
         );
       }
 
-      console.log(JSON.stringify(result, null, 2));
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
