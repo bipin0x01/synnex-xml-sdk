@@ -192,7 +192,13 @@ export class SynnexClient {
         requestXml
       );
       const result = await parseXmlToJson(data);
-      if (result.errorDetail) {
+      console.log(result);
+      if (
+        result.errorDetail ||
+        result.priceAvailabilityList?.items?.item?.length === 0 ||
+        result.priceAvailabilityList?.status === "Discontinued" ||
+        result.priceAvailabilityList?.status === "Not found"
+      ) {
         result.type = "error";
         return result as ErrorResponse;
       }

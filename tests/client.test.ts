@@ -37,4 +37,20 @@ describe("SynnexClient", () => {
     expect(response).toBeDefined();
     expect(response.type).toBe("success");
   });
+
+  // check PA for a discontinued product
+  it("should check price and availability of a discontinued SKU", async () => {
+    const skus = ["3791326"];
+    const response = await client.getPriceAvailability(skus);
+    expect(response).toBeDefined();
+    expect(response.type).toBe("error");
+  });
+
+  // not found product
+  it("should check price and availability of a not found SKU", async () => {
+    const skus = ["1234567890"];
+    const response = await client.getPriceAvailability(skus);
+    expect(response).toBeDefined();
+    expect(response.type).toBe("error");
+  });
 });
