@@ -93,15 +93,23 @@ export class SynnexClient {
    * @returns A promise that resolves to the purchase order response.
    * @throws An error if the submission fails.
    */
-  public async submitPO(request: SynnexB2BRequest): Promise<SynnexB2BResponse> {
+  public async submitPO(
+    request: SynnexB2BRequest
+  ): Promise<SynnexB2BResponse | ErrorResponse> {
     try {
       const requestXml = this.xmlBuilder.buildCreatePORequestXml(request);
       const response = await this.axiosInstance.post(
         "/SynnexXML/PO",
         requestXml
       );
-      const result = await parseXmlToJson(response.data);
-      return result;
+      const { orderResponse } = await parseXmlToJson(response.data);
+
+      if (orderResponse.errorDetail) {
+        orderResponse.type = "error";
+        return orderResponse as ErrorResponse;
+      }
+      orderResponse.type = "success";
+      return orderResponse as SynnexB2BResponse;
     } catch (error: any) {
       throw new Error(`Failed to submit PO: ${error.message}`);
     }

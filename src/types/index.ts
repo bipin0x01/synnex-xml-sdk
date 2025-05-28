@@ -293,7 +293,7 @@ export interface SynnexB2BRequest {
   OrderRequest: OrderRequest;
 }
 
-interface SynnexB2BResponseData {
+interface SynnexB2BResponseSuccess {
   type: "success";
   customerNumber: string;
   poNumber: string;
@@ -320,9 +320,9 @@ interface SynnexB2BResponseData {
     packages?: Package[];
   }[];
 }
-export interface SynnexB2BResponse {
-  orderResponse: SynnexB2BResponseData | ErrorResponse;
-}
+
+export type SynnexB2BResponse = SynnexB2BResponseSuccess | ErrorResponse;
+
 export interface POStatusRequest {
   poNumber: string;
 }

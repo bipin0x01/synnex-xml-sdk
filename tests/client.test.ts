@@ -1,4 +1,9 @@
-import { POStatusRequest } from "../src/types";
+import {
+  POStatusRequest,
+  SynnexB2BRequest,
+  DropShipFlag,
+  SynnexB2BResponse,
+} from "../src/types";
 import SynnexClient from "../src/client";
 import dotenv from "dotenv";
 
@@ -52,5 +57,42 @@ describe("SynnexClient", () => {
     const response = await client.getPriceAvailability(skus);
     expect(response).toBeDefined();
     expect(response.type).toBe("error");
+  });
+
+  // test inactive credentials which will return error
+  it("should create PO with inactive credentials", async () => {
+    const request: SynnexB2BRequest = {
+      OrderRequest: {
+        customerNumber: "123456",
+        poNumber: "111-8807765-8985036",
+        dropShipFlag: DropShipFlag.No,
+        shipment: {
+          shipTo: {
+            addressName1: "Test Company",
+            addressLine1: "123 Test St",
+            city: "Test City",
+            state: "CA",
+            zipCode: "12345",
+            country: "US",
+          },
+        },
+        items: [
+          {
+            sku: "6544282",
+            unitPrice: 100.0,
+            orderQuantity: 1,
+            lineNumber: "1",
+          },
+        ],
+      },
+    };
+
+    const response = await client.submitPO(request);
+    console.log(response);
+    expect(response).toBeDefined();
+    expect(response.type).toBe("error");
+    if (response.type === "error") {
+      expect(response.errorDetail).toBeDefined();
+    }
   });
 });
