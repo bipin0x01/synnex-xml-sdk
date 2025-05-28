@@ -16,6 +16,7 @@ import {
   SynnexFreightAPIResponse,
   SynnexFreightWithZipAPIResponse,
   SynnexInvoiceAPIResponse,
+  SynnexB2BResponseSuccess,
 } from "./types";
 import { parseXmlToJson } from "./utils/parser";
 import SynnexXmlBuilder from "./utils/xmlBuilder";
@@ -109,7 +110,7 @@ export class SynnexClient {
         return orderResponse as ErrorResponse;
       }
       orderResponse.type = "success";
-      return orderResponse as SynnexB2BResponse;
+      return orderResponse as SynnexB2BResponseSuccess;
     } catch (error: any) {
       throw new Error(`Failed to submit PO: ${error.message}`);
     }

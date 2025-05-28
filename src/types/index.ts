@@ -293,7 +293,7 @@ export interface SynnexB2BRequest {
   OrderRequest: OrderRequest;
 }
 
-interface SynnexB2BResponseSuccess {
+export interface SynnexB2BResponseSuccess {
   type: "success";
   customerNumber: string;
   poNumber: string;
