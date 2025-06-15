@@ -515,12 +515,6 @@ export interface FreightWithZipResponse {
   synnexInternalReference: string;
 }
 
-export interface InvoiceResponse {
-  type: "success";
-  customerPoNumber: string;
-  invoices: Invoice[];
-}
-
 export interface Invoice {
   invoiceDate: string; // YYYY-MM-DD
   invoiceNumber: string; // TD SYNNEX Invoice Number
@@ -533,12 +527,34 @@ export interface Invoice {
   paymentTermDays: number;
   paymentTermDesc: string;
   shipMethodCode: string;
+  shipMethodDesc?: string;
   shipDate: string; // YYYY-MM-DD
   comments?: string;
   internalReferenceNumber: string; // Invoice, Credit Memo or RMA Number
-  tracking?: Tracking;
-  items: Item[];
+  trackingNumbers?: string[]; // Array of tracking numbers
+  items: InvoiceItem[];
   summary: Summary;
+}
+
+export interface InvoiceItem {
+  lineNumber: string;
+  shipQuantity: string;
+  unitPrice: string;
+  synnexPartNumber: string;
+  manuafacturerPartNumber: string;
+  sku: string;
+  vendorNumber: string;
+  vendorName: string;
+  upcCode: string;
+  productDescription: string;
+  custPoLineNo: string;
+  serialNo?: string[];
+}
+
+export interface InvoiceResponse {
+  type: "success";
+  customerPoNumber: string;
+  invoice: Invoice;
 }
 
 export interface Tracking {

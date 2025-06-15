@@ -301,11 +301,55 @@ export class SynnexClient {
       const response = await this.axiosInstance.post(baseUrl, requestXml);
 
       const result = await parseXmlToJson(response.data);
-      if (result.errorDetail) {
-        result.type = "error";
-        return result as ErrorResponse;
+
+      if (
+        result.errorDetail ||
+        result.invoiceResponse?.errorCode ||
+        result.invoiceResponse?.errorReason
+      ) {
+        result.invoiceResponse = {
+          type: "error",
+          errorDetail:
+            result.errorDetail ||
+            result.invoiceResponse?.errorReason ||
+            "Unknown error",
+        };
+        return result.invoiceResponse;
       }
-      result.type = "success";
+
+      // Normalize items to always be an array
+      if (result.invoiceResponse?.invoice?.items) {
+        const items = result.invoiceResponse.invoice.items;
+        result.invoiceResponse.invoice.items = Array.isArray(items.item)
+          ? items.item
+          : items.item
+          ? [items.item]
+          : [];
+
+        // Normalize serialNo within each item
+        result.invoiceResponse.invoice.items =
+          result.invoiceResponse.invoice.items.map((item: any) => {
+            if (item.serialNo) {
+              item.serialNo = Array.isArray(item.serialNo)
+                ? item.serialNo
+                : [item.serialNo];
+            }
+            return item;
+          });
+      }
+
+      // Normalize tracking numbers if they exist
+      if (result.invoiceResponse?.invoice?.tracking?.trackNumber) {
+        const trackNumbers =
+          result.invoiceResponse.invoice.tracking.trackNumber;
+        result.invoiceResponse.invoice.trackingNumbers = trackNumbers
+          .split(",")
+          .map((num: string) => num.trim());
+        // Remove the old tracking object since we now have trackingNumbers array
+        delete result.invoiceResponse.invoice.tracking;
+      }
+
+      result.invoiceResponse.type = "success";
       return result.invoiceResponse;
     } catch (error: any) {
       throw new Error(`Failed to get invoice: ${error.message}`);

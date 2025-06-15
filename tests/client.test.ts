@@ -95,4 +95,17 @@ describe("SynnexClient", () => {
       expect(response.errorDetail).toBeDefined();
     }
   });
+
+
+  it("retrieve invoice", async () => {
+    const response = await client.getInvoice("113-1285573-0397859");
+    expect(response).toBeDefined();
+    expect(response.type).toBe("success");
+  });
+
+  it("retrieve invoice with invalid PO number", async () => {
+    const response = await client.getInvoice("113-1285573-0397898");
+    expect(response).toBeDefined();
+    expect(response.type).toBe("error");
+  });
 });
