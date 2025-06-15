@@ -317,36 +317,47 @@ export class SynnexClient {
         return result.invoiceResponse;
       }
 
-      // Normalize items to always be an array
-      if (result.invoiceResponse?.invoice?.items) {
-        const items = result.invoiceResponse.invoice.items;
-        result.invoiceResponse.invoice.items = Array.isArray(items.item)
-          ? items.item
-          : items.item
-          ? [items.item]
-          : [];
+      // Transform the response structure
+      if (result.invoiceResponse?.invoice) {
+        // Ensure invoice is an array
+        const invoices = Array.isArray(result.invoiceResponse.invoice)
+          ? result.invoiceResponse.invoice
+          : [result.invoiceResponse.invoice];
 
-        // Normalize serialNo within each item
-        result.invoiceResponse.invoice.items =
-          result.invoiceResponse.invoice.items.map((item: any) => {
-            if (item.serialNo) {
-              item.serialNo = Array.isArray(item.serialNo)
-                ? item.serialNo
-                : [item.serialNo];
-            }
-            return item;
-          });
-      }
+        // Transform each invoice in the array
+        result.invoiceResponse.invoice = invoices.map((invoice: any) => {
+          // Convert items to array if it's not already
+          if (invoice.items) {
+            const items = invoice.items;
+            invoice.items = Array.isArray(items.item)
+              ? items.item
+              : items.item
+              ? [items.item]
+              : [];
 
-      // Normalize tracking numbers if they exist
-      if (result.invoiceResponse?.invoice?.tracking?.trackNumber) {
-        const trackNumbers =
-          result.invoiceResponse.invoice.tracking.trackNumber;
-        result.invoiceResponse.invoice.trackingNumbers = trackNumbers
-          .split(",")
-          .map((num: string) => num.trim());
-        // Remove the old tracking object since we now have trackingNumbers array
-        delete result.invoiceResponse.invoice.tracking;
+            // Normalize serialNo within each item
+            invoice.items = invoice.items.map((item: any) => {
+              if (item.serialNo) {
+                item.serialNo = Array.isArray(item.serialNo)
+                  ? item.serialNo
+                  : [item.serialNo];
+              }
+              return item;
+            });
+          }
+
+          // Transform tracking to trackingNumber array
+          if (invoice.tracking?.trackNumber) {
+            const trackNumbers = invoice.tracking.trackNumber;
+            invoice.trackingNumbers = Array.isArray(trackNumbers)
+              ? trackNumbers
+              : trackNumbers.split(",").map((num: string) => num.trim());
+            // Remove the old tracking object
+            delete invoice.tracking;
+          }
+
+          return invoice;
+        });
       }
 
       result.invoiceResponse.type = "success";

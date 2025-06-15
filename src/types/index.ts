@@ -531,7 +531,7 @@ export interface Invoice {
   shipDate: string; // YYYY-MM-DD
   comments?: string;
   internalReferenceNumber: string; // Invoice, Credit Memo or RMA Number
-  trackingNumbers?: string[]; // Array of tracking numbers
+  trackingNumbers: string[]; // Array of tracking numbers
   items: InvoiceItem[];
   summary: Summary;
 }
@@ -552,9 +552,10 @@ export interface InvoiceItem {
 }
 
 export interface InvoiceResponse {
-  type: "success";
+  type: "success" | "error";
   customerPoNumber: string;
-  invoice: Invoice;
+  invoice: Invoice[];
+  errorDetail?: string;
 }
 
 export interface Tracking {
