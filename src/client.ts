@@ -105,6 +105,17 @@ export class SynnexClient {
       );
       const { orderResponse } = await parseXmlToJson(response.data);
 
+      // TODO: hotfix for array iteration
+      if (orderResponse.items) {
+        if (Array.isArray(orderResponse.items)) {
+          orderResponse.items = orderResponse.items.map((obj: any) => obj.item);
+        } else {
+          orderResponse.items = [
+            orderResponse.items.item || orderResponse.items,
+          ];
+        }
+      }
+
       if (orderResponse.errorDetail) {
         orderResponse.type = "error";
         return orderResponse as ErrorResponse;
