@@ -212,7 +212,6 @@ export class SynnexClient {
         requestXml
       );
       const result = await parseXmlToJson(data);
-      console.log(result);
       if (
         result.errorDetail ||
         result.priceAvailabilityList?.items?.item?.length === 0 ||

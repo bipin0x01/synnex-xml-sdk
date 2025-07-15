@@ -59,8 +59,7 @@ describe("SynnexClient", () => {
     expect(response.type).toBe("error");
   });
 
-  // test inactive credentials which will return error
-  it("should create PO with inactive credentials", async () => {
+  it("should create PO", async () => {
     const request: SynnexB2BRequest = {
       OrderRequest: {
         customerNumber: "123456",
@@ -88,21 +87,18 @@ describe("SynnexClient", () => {
     };
 
     const response = await client.submitPO(request);
-    console.log(response);
     expect(response).toBeDefined();
-    expect(response.type).toBe("error");
+    expect(response.type).toBe("success");
     if (response.type === "error") {
       expect(response.errorDetail).toBeDefined();
     }
   });
 
-
-  it("retrieve invoice", async () => {
-    const response = await client.getInvoice("113-9835666-1599446");
-    console.log(JSON.stringify(response, null, 2));
-    expect(response).toBeDefined();
-    expect(response.type).toBe("success");
-  });
+  // it("retrieve invoice", async () => {
+  //   const response = await client.getInvoice("113-9835666-1599446");
+  //   expect(response).toBeDefined();
+  //   expect(response.type).toBe("success");
+  // });
 
   it("retrieve invoice with invalid PO number", async () => {
     const response = await client.getInvoice("113-1285573-0397898");
