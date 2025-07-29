@@ -1,6 +1,6 @@
 {
   "name": "synnex-xml-sdk",
-  "version": "1.1.18",
+  "version": "1.1.19",
   "description": "A TypeScript-supported Node.js SDK for Synnex XML Services.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

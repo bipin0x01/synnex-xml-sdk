@@ -1,7 +1,20 @@
 import { parseStringPromise } from "xml2js";
 import _ from "lodash";
 
-// Function to recursively transform object keys to camel case
+// Function to convert string numbers with commas to decimal numbers
+const convertStringToNumber = (value: any): any => {
+  if (typeof value === "string") {
+    // Remove commas and convert to number if it looks like a number
+    const cleanedValue = value.replace(/,/g, "");
+    const numValue = parseFloat(cleanedValue);
+    if (!isNaN(numValue)) {
+      return numValue;
+    }
+  }
+  return value;
+};
+
+// Function to recursively transform object keys to camel case and convert numeric strings
 const keysToCamel = (obj: any): any => {
   if (_.isArray(obj)) {
     return obj.map((v) => keysToCamel(v));
@@ -16,7 +29,7 @@ const keysToCamel = (obj: any): any => {
       {} as any
     );
   }
-  return obj;
+  return convertStringToNumber(obj);
 };
 
 export const parseXmlToJson = async (xml: string): Promise<any> => {

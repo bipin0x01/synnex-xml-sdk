@@ -361,7 +361,9 @@ export class SynnexClient {
             const trackNumbers = invoice.tracking.trackNumber;
             invoice.trackingNumbers = Array.isArray(trackNumbers)
               ? trackNumbers
-              : trackNumbers.split(",").map((num: string) => num.trim());
+              : typeof trackNumbers === "string"
+              ? trackNumbers.split(",").map((num: string) => num.trim())
+              : [];
             // Remove the old tracking object
             delete invoice.tracking;
           }

@@ -539,7 +539,7 @@ export interface Invoice {
 export interface InvoiceItem {
   lineNumber: string;
   shipQuantity: string;
-  unitPrice: string;
+  unitPrice: number;
   synnexPartNumber: string;
   manuafacturerPartNumber: string;
   sku: string;
