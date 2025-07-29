@@ -97,7 +97,6 @@ describe("SynnexClient", () => {
   it("retrieve invoice", async () => {
     const response = await client.getInvoice("295054788-7W0AN");
 
-    console.log(JSON.stringify(response, null, 2));
     expect(response).toBeDefined();
     expect(response.type).toBe("success");
   }, 10000);

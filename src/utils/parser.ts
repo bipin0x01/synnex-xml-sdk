@@ -1,9 +1,28 @@
 import { parseStringPromise } from "xml2js";
 import _ from "lodash";
 
-// Function to convert string numbers with commas to decimal numbers
-const convertStringToNumber = (value: any): any => {
-  if (typeof value === "string") {
+// Currency-related fields that should be converted from comma-formatted strings to numbers
+const CURRENCY_FIELDS = new Set([
+  'unitPrice',
+  'totalInvoiceAmount',
+  'expenseTotal',
+  'minOrderFee',
+  'freight',
+  'salesTax',
+  'shipping',
+  'discount',
+  'handlingFee',
+  'tax',
+  'recyclingFee',
+  'processingFee',
+  'boxCharge',
+  'rebate',
+  'price',
+]);
+
+// Function to convert comma-formatted currency strings to numbers
+const convertCurrencyString = (value: any, fieldName: string): any => {
+  if (typeof value === "string" && CURRENCY_FIELDS.has(fieldName)) {
     // Remove commas and convert to number if it looks like a number
     const cleanedValue = value.replace(/,/g, "");
     const numValue = parseFloat(cleanedValue);
@@ -14,22 +33,22 @@ const convertStringToNumber = (value: any): any => {
   return value;
 };
 
-// Function to recursively transform object keys to camel case and convert numeric strings
-const keysToCamel = (obj: any): any => {
+// Function to recursively transform object keys to camel case and convert currency strings
+const keysToCamel = (obj: any, parentKey: string = ""): any => {
   if (_.isArray(obj)) {
-    return obj.map((v) => keysToCamel(v));
+    return obj.map((v) => keysToCamel(v, parentKey));
   } else if (_.isObject(obj)) {
     return _.reduce(
       obj,
       (result, value, key) => {
         const camelKey = _.camelCase(key);
-        result[camelKey] = keysToCamel(value);
+        result[camelKey] = keysToCamel(value, camelKey);
         return result;
       },
       {} as any
     );
   }
-  return convertStringToNumber(obj);
+  return convertCurrencyString(obj, parentKey);
 };
 
 export const parseXmlToJson = async (xml: string): Promise<any> => {
