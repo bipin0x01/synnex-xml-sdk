@@ -581,6 +581,7 @@ export interface Summary {
   totalWeight: number;
   boxCount: number;
   salesTax: number;
+  shipping: number;
 }
 
 export interface ErrorResponse {
