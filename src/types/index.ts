@@ -374,8 +374,6 @@ export interface POStatusResponse {
 
 export interface FreightQuoteRequest {
   version?: string;
-  customerNumber?: string;
-  customerName?: string;
   requestDateTime?: string;
   shipFromWarehouse: string;
   shipToZipCode?: string;

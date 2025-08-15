@@ -106,4 +106,28 @@ describe("SynnexClient", () => {
     expect(response).toBeDefined();
     expect(response.type).toBe("error");
   });
+
+  // test frieght quote
+  it("retrieve freight quote", async () => {
+    const response = await client.getFreightQuote({
+      version: "2.0",
+      shipFromWarehouse: "503",
+      shipTo: {
+        addressName1: "Washington Street",
+        city: "Brooklyn",
+        state: "NY",
+        zipCode: "11201",
+        country: "US",
+      },
+      items: [
+        {
+          lineNumber: 1,
+          SKU: "7680599",
+          quantity: 1,
+        },
+      ],
+    });
+    console.log(response);
+    expect(response).toBeDefined();
+  });
 });

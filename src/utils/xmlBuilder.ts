@@ -250,8 +250,8 @@ export class SynnexXmlBuilder {
       <SynnexB2B>
         ${this.buildCredentialXml()}
         <FreightQuoteRequest version="${version}">
-          <CustomerNumber>${request.customerNumber}</CustomerNumber>
-          <CustomerName>${request.customerName}</CustomerName>
+          <CustomerNumber>${this.accountNumber}</CustomerNumber>
+          <CustomerName>${this.accountName}</CustomerName>
           <RequestDateTime>${requestDateTime}</RequestDateTime>
           <ShipFromWarehouse>${request.shipFromWarehouse}</ShipFromWarehouse>
           ${shipToXml}
