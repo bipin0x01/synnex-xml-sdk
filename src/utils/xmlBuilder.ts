@@ -239,8 +239,9 @@ export class SynnexXmlBuilder {
       .join("");
 
     const shipToXml = `<ShipTo>
-          <AddressName1>${request.shipTo.addressName1}</AddressName1>
-          <AddressName2>${request.shipTo.addressName2 || ""}</AddressName2>
+          <AddressName1>${request.shipTo.addressName1 || ""}</AddressName1>
+          <AddressLine1>${request.shipTo.addressLine1}</AddressLine1>
+          <AddressLine2>${request.shipTo.addressLine2 || ""}</AddressLine2>
           <City>${request.shipTo.city}</City>
           <State>${request.shipTo.state}</State>
           <ZipCode>${request.shipTo.zipCode}</ZipCode>

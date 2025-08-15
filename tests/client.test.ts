@@ -113,7 +113,8 @@ describe("SynnexClient", () => {
       version: "2.0",
       shipFromWarehouse: "503",
       shipTo: {
-        addressName1: "Washington Street",
+        addressName1: "Test Company",
+        addressLine1: "Washington Street",
         city: "Brooklyn",
         state: "NY",
         zipCode: "11201",
@@ -127,7 +128,7 @@ describe("SynnexClient", () => {
         },
       ],
     });
-    console.log(response);
+    console.log(JSON.stringify(response, null, 2));
     expect(response).toBeDefined();
   });
 });

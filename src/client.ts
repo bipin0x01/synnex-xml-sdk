@@ -245,6 +245,35 @@ export class SynnexClient {
         requestXml
       );
       const result = await parseXmlToJson(response.data);
+
+      // TODO: hotfix for array iteration of items in freightQuoteResponse and availabileShipMethods
+      if (result.freightQuoteResponse?.items) {
+        if (Array.isArray(result.freightQuoteResponse.items)) {
+          result.freightQuoteResponse.items =
+            result.freightQuoteResponse.items.map((obj: any) => obj.item);
+        } else {
+          result.freightQuoteResponse.items = [
+            result.freightQuoteResponse.items.item ||
+              result.freightQuoteResponse.items,
+          ];
+        }
+      }
+      if (result.freightQuoteResponse?.availableShipMethods) {
+        // Handle the nested structure: availableShipMethods.availableShipMethod
+        if (
+          result.freightQuoteResponse.availableShipMethods.availableShipMethod
+        ) {
+          result.freightQuoteResponse.availableShipMethods = Array.isArray(
+            result.freightQuoteResponse.availableShipMethods.availableShipMethod
+          )
+            ? result.freightQuoteResponse.availableShipMethods
+                .availableShipMethod
+            : [
+                result.freightQuoteResponse.availableShipMethods
+                  .availableShipMethod,
+              ];
+        }
+      }
       if (result.errorDetail) {
         result.type = "error";
         return result as ErrorResponse;
@@ -273,6 +302,21 @@ export class SynnexClient {
         requestXml
       );
       const result = await parseXmlToJson(response.data);
+
+      // TODO: hotfix for availableShipMethods structure
+      if (
+        result.freightQuoteResponse?.availableShipMethods?.availableShipMethod
+      ) {
+        result.freightQuoteResponse.availableShipMethods = Array.isArray(
+          result.freightQuoteResponse.availableShipMethods.availableShipMethod
+        )
+          ? result.freightQuoteResponse.availableShipMethods.availableShipMethod
+          : [
+              result.freightQuoteResponse.availableShipMethods
+                .availableShipMethod,
+            ];
+      }
+
       if (result.errorDetail) {
         result.type = "error";
         return result as ErrorResponse;

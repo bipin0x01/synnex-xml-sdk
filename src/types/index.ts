@@ -378,8 +378,9 @@ export interface FreightQuoteRequest {
   shipFromWarehouse: string;
   shipToZipCode?: string;
   shipTo: {
-    addressName1: string;
-    addressName2?: string;
+    addressName1?: string;
+    addressLine1: string;
+    addressLine2?: string;
     city: string;
     state: string;
     zipCode: string;
@@ -434,7 +435,7 @@ export interface FreightQuoteResponse {
     code: string;
     shipMethodDescription: string;
     serviceLevel: number;
-    freight: string;
+    freight: number;
   }>;
   otherCharges: {
     minOrderFee: string;
@@ -498,14 +499,12 @@ export interface FreightWithZipResponse {
     addr: string;
   };
   shipToZipCode: string;
-  availableShipMethods: {
-    availableShipMethod: Array<{
-      code: string;
-      shipMethodDescription: string;
-      serviceLevel: number;
-      freight: string;
-    }>;
-  };
+  availableShipMethods: Array<{
+    code: string;
+    shipMethodDescription: string;
+    serviceLevel: number;
+    freight: number;
+  }>;
   otherCharges: {
     minOrderFee: string;
     CODFee: string;
