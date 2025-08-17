@@ -398,6 +398,7 @@ export interface FreightQuoteRequest {
 }
 
 export interface FreightQuoteResponse {
+  type: "success";
   customerNumber: string;
   responseDateTime: string;
   responseElapsedTime: string;
