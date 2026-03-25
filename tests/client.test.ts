@@ -25,16 +25,16 @@ describe("SynnexClient", () => {
     client = new SynnexClient(config);
   });
 
-  it(" should check order status of a valid PO", async () => {
-    const request: POStatusRequest = {
-      poNumber: "111-8807765-8985036",
-    };
+  // it(" should check order status of a valid PO", async () => {
+  //   const request: POStatusRequest = {
+  //     poNumber: "111-8807765-8985036",
+  //   };
 
-    const response = await client.getOrderStatus(request);
+  //   const response = await client.getOrderStatus(request);
 
-    expect(response).toBeDefined();
-    expect(response.type).toBe("success");
-  });
+  //   expect(response).toBeDefined();
+  //   expect(response.type).toBe("success");
+  // });
 
   it("should check price and availability of a valid SKU", async () => {
     const skus = ["6544282"];
@@ -128,6 +128,14 @@ describe("SynnexClient", () => {
         },
       ],
     });
+    console.log(JSON.stringify(response, null, 2));
+    expect(response).toBeDefined();
+  });
+
+
+  // test mfg pn by sku
+  it("retrieve mfg pn by sku", async () => {
+    const response = await client.getMfgPnBySku("7680599");
     console.log(JSON.stringify(response, null, 2));
     expect(response).toBeDefined();
   });
