@@ -229,6 +229,51 @@ export class SynnexClient {
   }
 
   /**
+   * Retrieve the Manufacturer Part Number (mfgPn) for a single TD SYNNEX SKU.
+   *
+   * @param sku - TD SYNNEX SKU (a.k.a. synnexSKU in the API).
+   * @returns A promise that resolves to the manufacturer part number.
+   * @throws An error if the SKU is not found / discontinued / unauthorized.
+   */
+  public async getMfgPnBySku(sku: string): Promise<string> {
+    const requestXml = this.xmlBuilder.buildPriceAvailabilityRequestXml([sku]);
+    const { data } = await this.axiosInstance.post(
+      "/SynnexXML/PriceAvailability",
+      requestXml
+    );
+    const result = await parseXmlToJson(data);
+
+    if (result.errorDetail) {
+      throw new Error(result.errorDetail);
+    }
+
+    const list = result.priceAvailabilityList
+      ? Array.isArray(result.priceAvailabilityList)
+        ? result.priceAvailabilityList
+        : [result.priceAvailabilityList]
+      : [];
+
+    if (list.length === 0) {
+      throw new Error(`SKU ${sku} not found`);
+    }
+
+    const first = list[0];
+    if (
+      first?.status === "Discontinued" ||
+      first?.status === "Not found" ||
+      first?.status === "Notauthorized"
+    ) {
+      throw new Error(`SKU ${sku} status: ${first.status}`);
+    }
+
+    const mfgPn = first?.mfgPn;
+    if (!mfgPn) {
+      throw new Error(`Manufacturer part number not found for SKU ${sku}`);
+    }
+    return mfgPn;
+  }
+
+  /**
    * Get a freight quote.
    *
    * @param request - The freight quote request data.
