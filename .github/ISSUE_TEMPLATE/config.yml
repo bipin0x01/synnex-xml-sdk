@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/bipin0x01/synnex-xml-sdk/blob/main/SECURITY.md
+    about: Please report security issues privately — do not open a public issue.
+  - name: TD SYNNEX XML documentation
+    url: https://www.synnexcorp.com/esolutions/xml/
+    about: Official TD SYNNEX XML API documentation (credentials and account setup).

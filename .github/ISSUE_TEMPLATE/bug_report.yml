@@ -1,0 +1,90 @@
+name: Bug report
+description: Report a problem with the SDK
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please do **not** include API passwords, account numbers, or customer/order data.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear summary of what went wrong.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps or code sample that trigger the issue.
+      placeholder: |
+        1. Create a SynnexClient with sandbox config
+        2. Call client.getOrderStatus({ poNumber: "..." })
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include sanitized error messages if helpful. Redact credentials and PII.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: SDK version
+      placeholder: e.g. 1.1.25
+    validations:
+      required: true
+
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      placeholder: e.g. 18.20.0
+    validations:
+      required: false
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - sandbox
+        - production
+        - both / unknown
+    validations:
+      required: false
+
+  - type: dropdown
+    id: country
+    attributes:
+      label: Country endpoint
+      options:
+        - US
+        - CA
+        - both / unknown
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Screenshots, related issues, or other notes (no secrets).
+    validations:
+      required: false

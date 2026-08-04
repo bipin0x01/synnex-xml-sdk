@@ -21,10 +21,18 @@
   },
   "keywords": [
     "synnex",
+    "td-synnex",
+    "xml",
     "sdk",
     "typescript",
-    "nodejs"
+    "nodejs",
+    "b2b",
+    "purchase-order",
+    "price-availability"
   ],
+  "engines": {
+    "node": ">=14"
+  },
   "author": "Bipin Thapa",
   "license": "MIT",
   "bugs": {
