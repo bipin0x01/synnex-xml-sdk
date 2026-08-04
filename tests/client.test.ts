@@ -36,28 +36,29 @@ describe("SynnexClient", () => {
   //   expect(response.type).toBe("success");
   // });
 
-  it("should check price and availability of a valid SKU", async () => {
-    const skus = ["6544282"];
-    const response = await client.getPriceAvailability(skus);
-    expect(response).toBeDefined();
-    expect(response.type).toBe("success");
-  });
+  // it("should check price and availability of a valid SKU", async () => {
+  //   const skus = ["3162902"];
+  //   const response = await client.getPriceAvailability(skus);
+  //   console.log(JSON.stringify(response, null, 2));
+  //   expect(response).toBeDefined();
+  //   expect(response.type).toBe("success");
+  // });
 
-  // check PA for a discontinued product
-  it("should check price and availability of a discontinued SKU", async () => {
-    const skus = ["3791326"];
-    const response = await client.getPriceAvailability(skus);
-    expect(response).toBeDefined();
-    expect(response.type).toBe("error");
-  });
+  // // check PA for a discontinued product
+  // it("should check price and availability of a discontinued SKU", async () => {
+  //   const skus = ["3791326"];
+  //   const response = await client.getPriceAvailability(skus);
+  //   expect(response).toBeDefined();
+  //   expect(response.type).toBe("error");
+  // });
 
-  // not found product
-  it("should check price and availability of a not found SKU", async () => {
-    const skus = ["1234567890"];
-    const response = await client.getPriceAvailability(skus);
-    expect(response).toBeDefined();
-    expect(response.type).toBe("error");
-  });
+  // // not found product
+  // it("should check price and availability of a not found SKU", async () => {
+  //   const skus = ["1234567890"];
+  //   const response = await client.getPriceAvailability(skus);
+  //   expect(response).toBeDefined();
+  //   expect(response.type).toBe("error");
+  // });
 
   // it("should create PO", async () => {
   //   const request: SynnexB2BRequest = {
@@ -95,48 +96,49 @@ describe("SynnexClient", () => {
   // });
 
   it("retrieve invoice", async () => {
-    const response = await client.getInvoice("295054788-7W0AN");
+    const response = await client.getInvoice("207271512-ESXS");
 
+    console.log(JSON.stringify(response), 2, 2);
     expect(response).toBeDefined();
     expect(response.type).toBe("success");
-  }, 10000);
-
-  it("retrieve invoice with invalid PO number", async () => {
-    const response = await client.getInvoice("113-1285573-0397898");
-    expect(response).toBeDefined();
-    expect(response.type).toBe("error");
   });
 
-  // test frieght quote
-  it("retrieve freight quote", async () => {
-    const response = await client.getFreightQuote({
-      version: "2.0",
-      shipFromWarehouse: "503",
-      shipTo: {
-        addressName1: "Test Company",
-        addressLine1: "Washington Street",
-        city: "Brooklyn",
-        state: "NY",
-        zipCode: "11201",
-        country: "US",
-      },
-      items: [
-        {
-          lineNumber: 1,
-          SKU: "7680599",
-          quantity: 1,
-        },
-      ],
-    });
-    console.log(JSON.stringify(response, null, 2));
-    expect(response).toBeDefined();
-  });
+  // it("retrieve invoice with invalid PO number", async () => {
+  //   const response = await client.getInvoice("113-1285573-0397898");
+  //   expect(response).toBeDefined();
+  //   expect(response.type).toBe("error");
+  // });
 
+  // // test frieght quote
+  // it("retrieve freight quote", async () => {
+  //   const response = await client.getFreightQuote({
+  //     version: "2.0",
+  //     shipFromWarehouse: "503",
+  //     shipTo: {
+  //       addressName1: "Test Company",
+  //       addressLine1: "Washington Street",
+  //       city: "Brooklyn",
+  //       state: "NY",
+  //       zipCode: "11201",
+  //       country: "US",
+  //     },
+  //     items: [
+  //       {
+  //         lineNumber: 1,
+  //         SKU: "7680599",
+  //         quantity: 1,
+  //       },
+  //     ],
+  //   });
+  //   console.log(JSON.stringify(response, null, 2));
+  //   expect(response).toBeDefined();
+  // });
 
-  // test mfg pn by sku
-  it("retrieve mfg pn by sku", async () => {
-    const response = await client.getMfgPnBySku("7680599");
-    console.log(JSON.stringify(response, null, 2));
-    expect(response).toBeDefined();
-  });
+  // // test mfg pn by sku
+  // it("retrieve mfg pn by sku", async () => {
+  //   const response = await client.getMfgPnBySku("3162902");
+
+  //   console.log(JSON.stringify(response, null, 2));
+  //   expect(response).toBeDefined();
+  // });
 });

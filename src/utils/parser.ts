@@ -20,14 +20,16 @@ const CURRENCY_FIELDS = new Set([
   'price',
 ]);
 
-// Function to convert comma-formatted currency strings to numbers
+// Function to convert comma-formatted currency strings to numbers.
+// TD SYNNEX credit memos append "CR" (e.g. "711.64CR") — treat those as negative.
 const convertCurrencyString = (value: any, fieldName: string): any => {
   if (typeof value === "string" && CURRENCY_FIELDS.has(fieldName)) {
-    // Remove commas and convert to number if it looks like a number
-    const cleanedValue = value.replace(/,/g, "");
-    const numValue = parseFloat(cleanedValue);
+    const cleanedValue = value.replace(/,/g, "").trim();
+    const isCredit = /CR$/i.test(cleanedValue);
+    const numericPart = cleanedValue.replace(/CR$/i, "");
+    const numValue = parseFloat(numericPart);
     if (!isNaN(numValue)) {
-      return numValue;
+      return isCredit ? -Math.abs(numValue) : numValue;
     }
   }
   return value;

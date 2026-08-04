@@ -391,14 +391,16 @@ export class SynnexClient {
       const baseUrl = this.getBaseUrl(
         this.config.environment,
         this.config.country,
-        "invoice"
+        "invoice",
       );
       const requestXml = this.xmlBuilder.buildInvoiceRequestXml(
         poNumber,
-        orderNumber
+        orderNumber,
       );
       const response = await this.axiosInstance.post(baseUrl, requestXml);
 
+
+      console.log(response);
       const result = await parseXmlToJson(response.data);
 
       if (
