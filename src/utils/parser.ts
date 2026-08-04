@@ -51,6 +51,64 @@ const keysToCamel = (obj: any, parentKey: string = ""): any => {
   return convertCurrencyString(obj, parentKey);
 };
 
+/**
+ * Keys whose value is a repeatable element in the TD SYNNEX schema.
+ *
+ * `explicitArray: false` keeps single values unwrapped, which is what we want
+ * for scalars, but it also collapses a one-item list into a bare object. The
+ * same endpoint then returns an object for one result and an array for two,
+ * so callers that iterate break on the single-item case.
+ *
+ * Normalizing here keeps every call site free of `Array.isArray` guards.
+ */
+const LIST_FIELDS = new Set([
+  "priceAvailabilityList",
+  "items",
+  "item",
+  "packages",
+  "package",
+  "availabilityByWarehouse",
+  "availableShipMethods",
+  "availableShipMethod",
+  "invoice",
+  "serialNo",
+]);
+
+/**
+ * Coerce a parsed XML value into an array.
+ *
+ * `undefined` and `null` mean the element was absent and become `[]`. Other
+ * falsy values (0, "", false) are genuinely present and are preserved.
+ */
+export const ensureArray = <T>(value: T | T[] | undefined | null): T[] => {
+  if (value === undefined || value === null) {
+    return [];
+  }
+  return Array.isArray(value) ? value : [value];
+};
+
+// Recursively wrap known repeatable elements so their shape is stable.
+const normalizeLists = (obj: any): any => {
+  if (_.isArray(obj)) {
+    return obj.map(normalizeLists);
+  }
+  if (!_.isObject(obj)) {
+    return obj;
+  }
+  return _.reduce(
+    obj,
+    (result, value, key) => {
+      const normalized = normalizeLists(value);
+      result[key] =
+        LIST_FIELDS.has(key) && !_.isArray(normalized)
+          ? [normalized]
+          : normalized;
+      return result;
+    },
+    {} as any
+  );
+};
+
 export const parseXmlToJson = async (xml: string): Promise<any> => {
   try {
     // Configure parser options
@@ -63,7 +121,7 @@ export const parseXmlToJson = async (xml: string): Promise<any> => {
     };
 
     const jsonResult = await parseStringPromise(xml, options);
-    return keysToCamel(jsonResult);
+    return normalizeLists(keysToCamel(jsonResult));
   } catch (error: any) {
     throw new Error("Failed to parse XML: " + error.message);
   }
