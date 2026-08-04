@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, and GitHub issue/PR templates for open-source contributions
 - Expanded README with full API reference and development guide
 - `.env.example` for local integration test setup
+- Tag-based GitHub Actions workflow to publish to npm (`v*` tags)
 
 ## [1.1.25] - 2025-07-16
 

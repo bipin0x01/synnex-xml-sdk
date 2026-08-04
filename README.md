@@ -249,6 +249,10 @@ Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for 
 - Bug reports and feature ideas: [open an issue](https://github.com/bipin0x01/synnex-xml-sdk/issues)
 - Security concerns: see [SECURITY.md](./SECURITY.md)
 
+### Releasing
+
+Maintainers publish by tagging (not on every PR). See [Releasing](./CONTRIBUTING.md#releasing-maintainers): bump with `npm run release:patch|minor|major`, then `git push origin main --follow-tags`. The [Publish to npm](./.github/workflows/publish.yml) workflow publishes and creates a GitHub Release. Requires the `NPM_TOKEN` repository secret.
+
 ## Related
 
 - Official TD SYNNEX XML docs: https://www.synnexcorp.com/esolutions/xml/

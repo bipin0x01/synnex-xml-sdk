@@ -92,6 +92,37 @@ Tips:
 
 Maintainers may request changes, squash commits, or ask for additional tests before merging.
 
+## Releasing (maintainers)
+
+Releases are **tag-based**. Merging a PR does not publish to npm. Publishing happens when a `v*` tag is pushed; GitHub Actions builds the package and runs `npm publish`.
+
+### One-time setup
+
+1. Create an npm [Automation](https://docs.npmjs.com/creating-and-viewing-access-tokens) access token (or configure [trusted publishing](https://docs.npmjs.com/trusted-publishers)).
+2. In the GitHub repo: **Settings → Secrets and variables → Actions**, add `NPM_TOKEN` with that token.
+
+### Publish a new version
+
+1. Ensure `main` is green and you have pulled the latest.
+2. Update [CHANGELOG.md](./CHANGELOG.md) (move Unreleased notes into the new version section).
+3. Bump the version (creates a commit + `vX.Y.Z` tag):
+
+   ```bash
+   npm run release:patch   # bug fixes
+   npm run release:minor   # new features (backward compatible)
+   npm run release:major   # breaking changes
+   ```
+
+4. Push the commit and tag:
+
+   ```bash
+   git push origin main --follow-tags
+   ```
+
+5. Confirm the **Publish to npm** workflow succeeds and the [npm package](https://www.npmjs.com/package/synnex-xml-sdk) shows the new version. A GitHub Release is created automatically.
+
+Run live tests locally (`npm test`) before tagging when the change touches API behavior. CI publish only builds — it does not run Synnex integration tests (those need credentials).
+
 ## Reporting security issues
 
 Please do **not** open a public issue for security vulnerabilities. See [SECURITY.md](./SECURITY.md).
