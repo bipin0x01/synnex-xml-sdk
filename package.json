@@ -11,7 +11,10 @@
     "build": "tsc",
     "test": "jest",
     "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run build",
+    "prepublishOnly": "npm run build",
+    "release:patch": "npm version patch",
+    "release:minor": "npm version minor",
+    "release:major": "npm version major",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "format": "prettier --write 'src/**/*.{ts,tsx,js,json}'"
   },
@@ -21,10 +24,18 @@
   },
   "keywords": [
     "synnex",
+    "td-synnex",
+    "xml",
     "sdk",
     "typescript",
-    "nodejs"
+    "nodejs",
+    "b2b",
+    "purchase-order",
+    "price-availability"
   ],
+  "engines": {
+    "node": ">=14"
+  },
   "author": "Bipin Thapa",
   "license": "MIT",
   "bugs": {

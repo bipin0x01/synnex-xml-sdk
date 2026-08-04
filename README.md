@@ -1,181 +1,263 @@
-# Synnex XML SDK Documentation
+# synnex-xml-sdk
 
-## Overview
+[![npm version](https://img.shields.io/npm/v/synnex-xml-sdk.svg)](https://www.npmjs.com/package/synnex-xml-sdk)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-ready-blue.svg)](https://www.typescriptlang.org/)
 
-The `SynnexClient` class provides a simple interface to interact with the TD SYNNEX XML API. It allows users to submit purchase orders and check the status of existing orders through the API.
+TypeScript Node.js SDK for the [TD SYNNEX XML API](https://www.synnexcorp.com/esolutions/xml/). Submit purchase orders, check order status, query price & availability, freight quotes, and invoices.
+
+## Features
+
+- Fully typed TypeScript API
+- Sandbox and production environments
+- US and Canada (`US` / `CA`) endpoints
+- Purchase orders, order status, price & availability, freight quotes, and invoices
+
+## Table of contents
+
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [Configuration](#configuration)
+- [API reference](#api-reference)
+- [Error handling](#error-handling)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Installation
 
-To use the `SynnexClient`, first install the SDK package:
-
 ```bash
 npm install synnex-xml-sdk
+# or
+pnpm add synnex-xml-sdk
+# or
+yarn add synnex-xml-sdk
 ```
 
-## Usage
+**Requirements:** Node.js 14+ (TypeScript recommended).
 
-### Importing the Client
-
-To use the `SynnexClient`, import it from the package:
+## Quick start
 
 ```typescript
-import { SynnexClient } from "synnex-xml-sdk";
-```
+import { SynnexClient, DropShipFlag } from "synnex-xml-sdk";
 
-### Creating an Instance
-
-Create an instance of `SynnexClient` by providing the necessary configuration options. These options include the environment, country, and authentication credentials.
-
-#### Configuration Options
-
-- `environment`: Specifies the environment to use (`"sandbox"` or `"production"`).
-- `country`: The country code (`"US"` or `"CA"`).
-- `username`: Your API username.
-- `password`: Your API password.
-- `accountNumber`: Your account number with SYNNEX.
-- `accountName`: The name associated with your SYNNEX account.
-
-### Example: Creating an Instance
-
-```typescript
-const synnexClient = new SynnexClient({
+const client = new SynnexClient({
   environment: "sandbox",
   country: "US",
-  username: "your-username",
-  password: "your-password",
-  accountNumber: "your-account-number",
-  accountName: "Your Account Name",
+  username: process.env.SYNNEX_USERNAME!,
+  password: process.env.SYNNEX_PASSWORD!,
+  accountNumber: process.env.SYNNEX_ACCOUNT_NUMBER!,
+  accountName: process.env.SYNNEX_ACCOUNT_NAME!,
 });
+
+const availability = await client.getPriceAvailability(["439866", "1058926"]);
+console.log(availability);
 ```
 
-### Submitting a Purchase Order
+## Configuration
 
-To submit a purchase order, use the `submitPO` method. This method requires a `SynnexB2BRequest` object containing the order details.
+| Option          | Type                         | Description                                      |
+| --------------- | ---------------------------- | ------------------------------------------------ |
+| `environment`   | `"sandbox" \| "production"`  | API environment                                  |
+| `country`       | `"US" \| "CA"`               | Regional endpoint                                |
+| `username`      | `string`                     | TD SYNNEX API username                           |
+| `password`      | `string`                     | TD SYNNEX API password                           |
+| `accountNumber` | `string`                     | Your TD SYNNEX customer / account number         |
+| `accountName`   | `string`                     | Account name associated with your credentials    |
 
-#### Example: Submitting a Purchase Order
+Store credentials in environment variables. Never commit secrets. See [`.env.example`](./.env.example) for local development.
+
+### Environments
+
+| Environment   | US base URL                         | CA base URL                         |
+| ------------- | ----------------------------------- | ----------------------------------- |
+| `sandbox`     | `https://testec.us.tdsynnex.com`    | `https://testec.ca.tdsynnex.com`    |
+| `production`  | `https://ec.us.tdsynnex.com`        | `https://ec.ca.tdsynnex.com`        |
+
+Invoice queries use a separate websocket host (`testws` / `ws`).
+
+## API reference
+
+### `submitPO(request)`
+
+Submit a purchase order.
 
 ```typescript
-const orderRequest = {
+import { DropShipFlag, SynnexB2BRequest } from "synnex-xml-sdk";
+
+const orderRequest: SynnexB2BRequest = {
   OrderRequest: {
-    PONumber: "PO123456",
-    DropShipFlag: "N",
-    Shipment: {
-      ShipFromWarehouse: "WarehouseCode",
-      ShipTo: {
-        AddressName1: "Customer Name",
-        AddressLine1: "123 Street",
-        City: "CityName",
-        State: "StateCode",
-        ZipCode: "12345",
-        Country: "US",
+    customerNumber: "123456",
+    poNumber: "PO-123456",
+    dropShipFlag: DropShipFlag.No,
+    shipment: {
+      shipTo: {
+        addressName1: "Customer Name",
+        addressLine1: "123 Street",
+        city: "CityName",
+        state: "CA",
+        zipCode: "12345",
+        country: "US",
       },
-      ShipToContact: {
-        ContactName: "Contact Name",
-        PhoneNumber: "1234567890",
-        EmailAddress: "email@example.com",
-      },
-      ShipMethod: {
-        Code: "UPS",
+      shipToContact: {
+        contactName: "Contact Name",
+        phoneNumber: "1234567890",
+        emailAddress: "email@example.com",
       },
     },
-    Payment: {
-      BillTo: {
-        AddressName1: "Billing Name",
-        AddressLine1: "456 Billing St",
-        City: "BillingCity",
-        State: "BillingState",
-        ZipCode: "67890",
-        Country: "US",
-      },
-    },
-    Items: [
+    items: [
       {
-        LineNumber: 1,
-        SKU: "SKU123",
-        UnitPrice: 10.0,
-        OrderQuantity: 2,
+        lineNumber: "1",
+        sku: "SKU123",
+        unitPrice: 10.0,
+        orderQuantity: 2,
       },
     ],
   },
 };
 
-async function submitOrder() {
-  try {
-    const response = await synnexClient.submitPO(orderRequest);
-  } catch (error) {
-    console.error("Error submitting order:", error);
-  }
-}
+const response = await client.submitPO(orderRequest);
 
-submitOrder();
+if (response.type === "success") {
+  console.log(response.poNumber, response.items);
+} else {
+  console.error(response.errorDetail);
+}
 ```
 
-### Checking Purchase Order Status
+### `getOrderStatus(request)`
 
-To check the status of a purchase order, use the `getOrderStatus` method. This method requires a `POStatusRequest` object containing the purchase order number.
-
-#### Example: Checking Purchase Order Status
+Check the status of an existing purchase order.
 
 ```typescript
-async function checkOrderStatus() {
-  try {
-    const statusResponse = await synnexClient.getOrderStatus("");
-  } catch (error) {
-    console.error("Error retrieving order status:", error);
-  }
-}
+const status = await client.getOrderStatus({ poNumber: "PO-123456" });
 
-checkOrderStatus();
+if (status.type === "success") {
+  console.log(status.orderStatusResponse.items);
+}
 ```
 
-#### Example: Checking Price and Availability of given SKU
+### `getPriceAvailability(skus)`
+
+Query price and availability for one or more SKUs.
 
 ```typescript
-async function checkPriceAvailability() {
-  const skus = ["439866", "1058926"];
+const result = await client.getPriceAvailability(["439866", "1058926"]);
 
-  try {
-    const priceAvailabilityResponse = await synnexClient.getPriceAvailability(
-      skus
-    );
-  } catch (error) {
-    console.error("Error fetching price and availability:", error);
-  }
+if (result.type === "success") {
+  console.log(result.priceAvailabilityList);
 }
-
-checkPriceAvailability();
 ```
 
-## Environment Configuration
+### `getMfgPnBySku(sku)`
 
-You can switch between the sandbox and production environments using the `environment` option in the configuration. Here are examples for both environments:
-
-### Sandbox Environment
+Resolve a manufacturer part number from a TD SYNNEX SKU. Throws if the SKU is missing, discontinued, or unauthorized.
 
 ```typescript
-const sandboxClient = new SynnexClient({
-  environment: "sandbox",
-  country: "US",
-  username: "sandbox-username",
-  password: "sandbox-password",
-  accountNumber: "sandbox-account-number",
-  accountName: "Sandbox Account",
+const mfgPn = await client.getMfgPnBySku("3162902");
+console.log(mfgPn);
+```
+
+### `getFreightQuote(request)`
+
+Get a freight quote for a full ship-to address.
+
+```typescript
+const quote = await client.getFreightQuote({
+  version: "2.0",
+  shipFromWarehouse: "503",
+  shipTo: {
+    addressName1: "Test Company",
+    addressLine1: "Washington Street",
+    city: "Brooklyn",
+    state: "NY",
+    zipCode: "11201",
+    country: "US",
+  },
+  items: [{ lineNumber: 1, SKU: "7680599", quantity: 1 }],
 });
 ```
 
-### Production Environment
+### `getFreightWithZip(request)`
+
+Get a freight quote using only a destination ZIP code.
 
 ```typescript
-const productionClient = new SynnexClient({
-  environment: "production",
-  country: "US",
-  username: "production-username",
-  password: "production-password",
-  accountNumber: "production-account-number",
-  accountName: "Production Account",
+const quote = await client.getFreightWithZip({
+  shipFromWarehouse: "503",
+  shipToZipCode: "11201",
+  items: [{ lineNumber: 1, SKU: "7680599", quantity: 1 }],
 });
 ```
 
-## Conclusion
+### `getInvoice(poNumber?, orderNumber?)`
 
-This SDK provides a straightforward interface for interacting with the TD SYNNEX XML API. Ensure you have the correct credentials and environment setup to use the client effectively. For more detailed information on request and response structures, please refer to the [official TD SYNNEX API documentation](https://www.synnexcorp.com/esolutions/xml/).
+Query invoice details by PO number and/or order number. Provide at least one identifier.
+
+```typescript
+const invoice = await client.getInvoice("207271512-ESXS");
+
+if (invoice.type === "success") {
+  console.log(invoice.invoice);
+}
+```
+
+## Error handling
+
+Most methods return a discriminated union with `type: "success" | "error"`. Network and transport failures throw.
+
+```typescript
+try {
+  const response = await client.submitPO(orderRequest);
+
+  if (response.type === "error") {
+    console.error("API error:", response.errorDetail);
+    return;
+  }
+
+  // response is typed as success here
+  console.log(response.items);
+} catch (error) {
+  console.error("Request failed:", error);
+}
+```
+
+## Development
+
+```bash
+git clone https://github.com/bipin0x01/synnex-xml-sdk.git
+cd synnex-xml-sdk
+npm install
+cp .env.example .env   # fill in sandbox credentials
+npm run build
+npm test
+```
+
+| Script              | Description                          |
+| ------------------- | ------------------------------------ |
+| `npm run build`     | Compile TypeScript to `dist/`        |
+| `npm test`          | Run Jest tests                       |
+| `npm run lint`      | Lint `src/` with ESLint              |
+| `npm run format`    | Format sources with Prettier         |
+
+> Tests are live integration tests against the TD SYNNEX sandbox. They require valid credentials in `.env` and may take 30s+ per request.
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, coding standards, and the pull request process. By participating, you agree to follow the [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+- Bug reports and feature ideas: [open an issue](https://github.com/bipin0x01/synnex-xml-sdk/issues)
+- Security concerns: see [SECURITY.md](./SECURITY.md)
+
+### Releasing
+
+Maintainers publish by tagging (not on every PR). See [Releasing](./CONTRIBUTING.md#releasing-maintainers): bump with `npm run release:patch|minor|major`, then `git push origin main --follow-tags`. The [Publish to npm](./.github/workflows/publish.yml) workflow publishes and creates a GitHub Release. Requires the `NPM_TOKEN` repository secret.
+
+## Related
+
+- Official TD SYNNEX XML docs: https://www.synnexcorp.com/esolutions/xml/
+- npm package: https://www.npmjs.com/package/synnex-xml-sdk
+
+## License
+
+[MIT](./LICENSE) © Bipin Thapa
